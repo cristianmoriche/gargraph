@@ -1,0 +1,50 @@
+/* Speed tiers: filtro, cabeceras de tramo pegadas y filas con la Velocidad en negrita */
+.v-velocidades .filtro {
+  margin-top: var(--espacio-3);
+  max-width: 200px;
+}
+
+.v-velocidades .explicacion {
+  margin-top: var(--espacio-3);
+}
+
+.v-velocidades .tramo {
+  margin-top: 0;
+}
+
+/* La cabecera del tramo se queda arriba mientras se recorre su lista */
+.v-velocidades .tramo-titulo {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  margin: 0 calc(-1 * var(--espacio-4));
+  padding: var(--espacio-2) var(--espacio-4);
+  background: var(--fondo);
+  font-size: var(--texto-lg);
+  line-height: 24px;
+  font-weight: var(--peso-negrita);
+}
+
+.v-velocidades .fila-pokemon {
+  display: grid;
+  grid-template-columns: 40px 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+.v-velocidades .velocidad {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-negrita);
+  font-variant-numeric: tabular-nums;
+}
+
+.v-velocidades .reparto {
+  display: block;
+  font-size: var(--texto-xs);
+  line-height: 16px;
+  color: var(--texto-suave);
+}
+
+.v-velocidades .pie {
+  margin-top: var(--espacio-4);
+}

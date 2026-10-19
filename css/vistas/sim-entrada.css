@@ -1,0 +1,147 @@
+/* Gargraph · simulador: preparar el combate y elegir rival, diseño simple.
+   Todos los selectores empiezan por .v-sim-preparar o .v-sim-rival. Colores, tamaños y radios: las variables de css/estilos.css. */
+
+/* La primera sección va pegada a la cabecera, que ya deja su margen */
+.v-sim-preparar .seccion.primera { margin-top: 0; }
+
+.v-sim-preparar .gana, .v-sim-rival .gana { color: var(--exito); }
+.v-sim-preparar .pierde, .v-sim-rival .pierde { color: var(--error); }
+
+/* Aviso de formato no compatible (las dos pantallas) */
+.v-sim-preparar .no-disponible-salida, .v-sim-rival .no-disponible-salida { margin-top: var(--espacio-3); }
+
+/* ===================== Preparar ===================== */
+
+/* Con varios equipos los botones pasan a otra línea en vez de desplazarse: así se ven todos */
+.v-sim-preparar #selEq { margin-bottom: var(--espacio-2); flex-wrap: wrap; overflow-x: visible; }
+
+/* «Cambiar rival» en la cabecera de su sección */
+.v-sim-preparar .seccion-cabecera { align-items: center; }
+.v-sim-preparar .cambiar { border-color: var(--acento); color: var(--acento); }
+
+/* Un equipo: nombre y etiqueta a la izquierda, los seis Pokémon a la derecha */
+.v-sim-preparar .equipo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+}
+.v-sim-preparar .equipo-texto { display: grid; flex: 1; justify-items: start; gap: var(--espacio-1); min-width: 0; }
+.v-sim-preparar .equipo-nombre {
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  line-height: 22px;
+  overflow-wrap: anywhere;
+}
+.v-sim-preparar .equipo-pokemon { display: flex; flex: none; }
+.v-sim-preparar .detalle-rival { margin-top: var(--espacio-2); }
+
+/* Un formato de dobles se simula como individual: se dice debajo de tu equipo */
+.v-sim-preparar .como-individual {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-2);
+  margin-top: var(--espacio-2);
+  padding: var(--espacio-2) var(--espacio-3);
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  background: var(--acento-suave);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+.v-sim-preparar .como-individual svg { flex: none; color: var(--acento); }
+.v-sim-preparar .como-individual b { font-weight: var(--peso-semibold); }
+
+/* Previsión */
+.v-sim-preparar .cifra {
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-negrita);
+  line-height: 28px;
+}
+.v-sim-preparar #prevision .nota { margin-top: var(--espacio-1); }
+
+/* Orden de velocidad: los 12 en filas de 6, con una raya arriba que dice de quién es cada uno */
+.v-sim-preparar .velocidad {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--espacio-3) var(--espacio-1);
+  list-style: none;
+}
+.v-sim-preparar .velocidad li {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding-top: var(--espacio-2);
+  border-top: 2px solid var(--texto-tenue);
+}
+.v-sim-preparar .velocidad li.yo { border-top-color: var(--acento); }
+.v-sim-preparar .velocidad b { font-size: var(--texto-sm); font-weight: var(--peso-semibold); line-height: 20px; }
+.v-sim-preparar .leyenda { margin-top: var(--espacio-3); }
+.v-sim-preparar .leyenda .marca {
+  display: inline-block;
+  width: 12px;
+  height: 4px;
+  margin-right: var(--espacio-1);
+  border-radius: var(--radio-xs);
+  background: var(--texto-tenue);
+  vertical-align: middle;
+}
+.v-sim-preparar .leyenda .marca.yo { background: var(--acento); }
+.v-sim-preparar .leyenda .marca:not(:first-child) { margin-left: var(--espacio-2); }
+
+/* Opciones: texto a la izquierda, control a la derecha */
+.v-sim-preparar .fila-texto > span { display: block; }
+.v-sim-preparar .fila .segmentado { flex: none; }
+.v-sim-preparar #notaCombates { margin-top: var(--espacio-2); }
+
+/* ===================== Elegir rival ===================== */
+
+.v-sim-rival .rivales { display: grid; gap: var(--espacio-2); }
+
+.v-sim-rival .rival-opcion {
+  display: grid;
+  gap: var(--espacio-2);
+  width: 100%;
+  padding: var(--espacio-3) var(--espacio-4);
+  border: var(--borde-fino);
+  border-radius: var(--radio-lg);
+  background: var(--superficie);
+  color: var(--texto);
+  text-align: left;
+  transition: background-color var(--transicion), border-color var(--transicion);
+}
+.v-sim-rival .rival-opcion:active { background: var(--superficie-alt); }
+/* El elegido: borde de 2 px (el de 1 px y una raya por dentro) en --acento y su fondo suave */
+.v-sim-rival .rival-opcion[aria-checked="true"] {
+  border-color: var(--acento);
+  outline: 1px solid var(--acento);
+  outline-offset: -2px;
+  background: var(--acento-suave);
+}
+.v-sim-rival .rival-cabecera { display: flex; align-items: baseline; justify-content: space-between; gap: var(--espacio-3); }
+.v-sim-rival .rival-nombre {
+  min-width: 0;
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  line-height: 22px;
+  overflow-wrap: anywhere;
+}
+.v-sim-rival .rival-prevision { flex: none; font-size: var(--texto-base); line-height: 22px; }
+.v-sim-rival .rival-prevision b { font-weight: var(--peso-semibold); }
+.v-sim-rival .rival-detalle { display: block; overflow-wrap: anywhere; }
+.v-sim-rival .rival-equipo { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); justify-items: center; }
+
+/* Pegar de Showdown */
+.v-sim-rival .pegar-contenido { display: grid; gap: var(--espacio-3); }
+.v-sim-rival .pegar-contenido .boton { justify-self: start; }
+
+/* «Usar este rival»: barra pegada encima de la barra de pestañas */
+.v-sim-rival .barra-accion {
+  position: sticky;
+  bottom: calc(var(--alto-barra-inferior) + env(safe-area-inset-bottom));
+  margin: var(--espacio-6) calc(-1 * var(--espacio-4)) 0;
+  padding: var(--espacio-3) var(--espacio-4);
+  border-top: var(--borde-fino);
+  background: var(--fondo);
+}

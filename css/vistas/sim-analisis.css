@@ -1,0 +1,498 @@
+/* Gargraph · simulador: la jugada de la IA y el análisis del combate (diseño simple).
+   Todos los selectores empiezan por .v-sim-decision o .v-sim-resultado. Las piezas comunes (tarjeta, lista, fila,
+   insignia, barra, botones) están en css/estilos.css: aquí solo se coloca lo propio de estas dos pantallas. */
+
+/* ===================================================================
+   El análisis
+   =================================================================== */
+
+/* Resultado */
+.v-sim-resultado .resultado-titulo {
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-semibold);
+  line-height: 28px;
+}
+
+.v-sim-resultado .resultado-titulo.gana {
+  color: var(--exito);
+}
+
+.v-sim-resultado .resultado-titulo.pierde {
+  color: var(--error);
+}
+
+.v-sim-resultado .resultado-rival {
+  margin-top: var(--espacio-1);
+  overflow-wrap: anywhere;
+  font-size: var(--texto-base);
+}
+
+.v-sim-resultado .resultado .nota {
+  margin-top: var(--espacio-1);
+}
+
+/* Un formato de dobles jugado como individual: se dice debajo del resultado */
+.v-sim-resultado .como-individual {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--espacio-1) var(--espacio-2);
+  margin-top: var(--espacio-2);
+}
+
+.v-sim-resultado .como-individual .nota {
+  margin-top: 0;
+}
+
+/* PS finales de cada equipo */
+.v-sim-resultado .seccion > .nota {
+  margin: var(--espacio-3) 0 var(--espacio-2);
+}
+
+.v-sim-resultado .seccion-cabecera + .nota {
+  margin-top: 0;
+}
+
+.v-sim-resultado .pk {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  min-height: var(--alto-fila-lista);
+  padding: var(--espacio-1) var(--espacio-4);
+}
+
+.v-sim-resultado .pk-texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  min-width: 0;
+}
+
+.v-sim-resultado .pk-nombre {
+  overflow: hidden;
+  font-size: var(--texto-base);
+  font-weight: var(--peso-medio);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v-sim-resultado .pk-dato {
+  flex: none;
+  min-width: 44px;
+  font-size: var(--texto-sm);
+  text-align: right;
+}
+
+.v-sim-resultado .pk.ko .pk-nombre,
+.v-sim-resultado .pk.ko .pk-dato {
+  color: var(--texto-suave);
+}
+
+.v-sim-resultado .pk.ko .pk-dato {
+  color: var(--error);
+  font-weight: var(--peso-semibold);
+}
+
+/* Gráfica de probabilidad: línea en --acento, sin relleno degradado */
+.v-sim-resultado .grafica {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: var(--espacio-2);
+  overflow: visible;
+}
+
+.v-sim-resultado .grafica .gd {
+  stroke: var(--borde-fuerte);
+  stroke-dasharray: 2 4;
+  stroke-width: 1;
+}
+
+.v-sim-resultado .grafica text {
+  stroke: none;
+}
+
+.v-sim-resultado .grafica .ax {
+  fill: var(--texto-suave);
+  font-size: var(--texto-xs);
+}
+
+.v-sim-resultado .grafica .area {
+  fill: var(--acento-suave);
+  stroke: none;
+}
+
+.v-sim-resultado .grafica .linea {
+  fill: none;
+  stroke: var(--acento);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.v-sim-resultado .grafica .fin {
+  fill: var(--acento);
+  stroke: none;
+}
+
+.v-sim-resultado .grafica .mk {
+  cursor: pointer;
+}
+
+.v-sim-resultado .grafica .toque {
+  fill: transparent;
+  stroke: none;
+}
+
+.v-sim-resultado .grafica .punto {
+  fill: var(--superficie);
+  stroke: var(--acento);
+  stroke-width: 1.5;
+}
+
+.v-sim-resultado .grafica .mk text {
+  fill: var(--acento);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semibold);
+}
+
+.v-sim-resultado .momentos {
+  margin-top: var(--espacio-2);
+}
+
+.v-sim-resultado .momentos .fila {
+  align-items: flex-start;
+}
+
+.v-sim-resultado .momentos .insignia {
+  margin-top: var(--espacio-1);
+}
+
+/* Mejor del combate y remate */
+.v-sim-resultado .destacado {
+  align-items: flex-start;
+  padding: var(--espacio-3) var(--espacio-4);
+}
+
+/* Rendimiento por Pokémon */
+.v-sim-resultado .rd {
+  display: grid;
+  gap: var(--espacio-2);
+  padding: var(--espacio-3) var(--espacio-4);
+}
+
+.v-sim-resultado .rd-cabeza {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+.v-sim-resultado .rd-barra,
+.v-sim-resultado .reparto li {
+  display: grid;
+  grid-template-columns: 104px 1fr 48px;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.v-sim-resultado .rd-cifra {
+  font-size: var(--texto-xs);
+  text-align: right;
+}
+
+/* Objetos, habilidades, movimientos y consejos */
+.v-sim-resultado .nt {
+  align-items: flex-start;
+  padding: var(--espacio-3) var(--espacio-4);
+}
+
+.v-sim-resultado .nt .fila-titulo .nota {
+  margin-left: var(--espacio-1);
+}
+
+.v-sim-resultado .nt > .insignia {
+  margin-top: 2px;
+}
+
+.v-sim-resultado .nt > p.fila-texto {
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+
+.v-sim-resultado .hechos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-2);
+}
+
+/* 100 combates */
+.v-sim-resultado .cien-cifra {
+  font-size: var(--texto-base);
+}
+
+.v-sim-resultado .cien-cifra b {
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-semibold);
+}
+
+.v-sim-resultado .cien-progreso {
+  margin-top: var(--espacio-2);
+}
+
+.v-sim-resultado .cien-estado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  min-height: var(--alto-tactil-min);
+}
+
+.v-sim-resultado .reparto {
+  display: grid;
+  gap: var(--espacio-2);
+  margin: var(--espacio-3) 0;
+  list-style: none;
+}
+
+.v-sim-resultado .cien-aviso {
+  margin-top: var(--espacio-2);
+  color: var(--error);
+  font-size: var(--texto-sm);
+}
+
+/* Botones del final: los tres en una fila, el texto se parte si no cabe */
+.v-sim-resultado .acciones {
+  display: grid;
+  gap: var(--espacio-2);
+}
+
+.v-sim-resultado .acciones .boton {
+  padding-right: var(--espacio-2);
+  padding-left: var(--espacio-2);
+  line-height: 18px;
+  text-align: center;
+}
+
+/* ===================================================================
+   La jugada de la IA
+   =================================================================== */
+
+/* Los dos Pokémon en el campo */
+.v-sim-decision .activos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espacio-2);
+}
+
+.v-sim-decision .activo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--espacio-1);
+  min-width: 0;
+  padding: var(--espacio-3);
+}
+
+.v-sim-decision .activo .sprite {
+  margin: var(--espacio-1) 0;
+}
+
+.v-sim-decision .activo-ps {
+  display: grid;
+  gap: var(--espacio-1);
+  width: 100%;
+  margin-top: var(--espacio-1);
+}
+
+.v-sim-decision .prob {
+  display: grid;
+  gap: var(--espacio-2);
+  margin-top: var(--espacio-2);
+}
+
+.v-sim-decision .prob-cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+}
+
+/* Opciones valoradas */
+.v-sim-decision .opciones {
+  display: grid;
+  gap: var(--espacio-2);
+  margin-top: var(--espacio-2);
+  list-style: none;
+}
+
+.v-sim-decision .op {
+  display: grid;
+  gap: var(--espacio-2);
+  padding: var(--espacio-3) var(--espacio-4);
+}
+
+.v-sim-decision .op.sel {
+  border-color: var(--acento);
+  background: var(--acento-suave);
+}
+
+.v-sim-decision .op-cabeza {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+.v-sim-decision .op-cabeza .fila-titulo {
+  flex: 1;
+  min-width: 0;
+}
+
+.v-sim-decision .op .barra {
+  background: var(--superficie-alt);
+}
+
+.v-sim-decision .op.sel .barra {
+  background: var(--superficie);
+}
+
+/* El porqué: la jugada de la IA y la del rival */
+.v-sim-decision .porque + .porque {
+  margin-top: var(--espacio-2);
+}
+
+.v-sim-decision .porque .elige {
+  margin: 2px 0 var(--espacio-1);
+  color: var(--acento);
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+  line-height: 24px;
+}
+
+.v-sim-decision .porque p:last-child {
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+
+/* Lo que pasó en el turno */
+.v-sim-decision .ev {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+}
+
+.v-sim-decision .ev > .insignia {
+  min-width: 44px;
+  justify-content: center;
+}
+
+.v-sim-decision .ev-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.v-sim-decision .ev-texto > p:first-child {
+  font-size: var(--texto-sm);
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+
+.v-sim-decision .ev-texto .ko {
+  color: var(--error);
+  font-weight: var(--peso-semibold);
+}
+
+.v-sim-decision .ev-texto .insignia {
+  vertical-align: 1px;
+}
+
+/* La tira de turnos */
+.v-sim-decision .curva {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: var(--espacio-2);
+  overflow: visible;
+  cursor: pointer;
+}
+
+.v-sim-decision .curva-linea {
+  fill: none;
+  stroke: var(--acento);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.v-sim-decision .curva .kl {
+  fill: var(--superficie);
+  stroke: var(--acento);
+  stroke-width: 1.5;
+}
+
+.v-sim-decision .curva .cur {
+  fill: var(--acento);
+  stroke: var(--superficie);
+  stroke-width: 2;
+}
+
+.v-sim-decision .celdas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-2);
+}
+
+.v-sim-decision .celda {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--alto-tactil-min);
+  padding: 2px;
+  border: var(--borde-fino);
+  border-radius: var(--radio-sm);
+  background: var(--superficie);
+  color: var(--texto);
+  transition: background-color var(--transicion), border-color var(--transicion);
+}
+
+.v-sim-decision .celda b {
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-semibold);
+  line-height: 18px;
+}
+
+.v-sim-decision .celda small {
+  color: var(--texto-suave);
+  font-size: var(--texto-2xs);
+  line-height: 14px;
+}
+
+.v-sim-decision .celda.clave::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border: 1.5px solid var(--acento);
+  border-radius: var(--radio-xs);
+}
+
+.v-sim-decision .celda[aria-pressed="true"] {
+  border-color: var(--acento);
+  background: var(--acento-suave);
+  color: var(--acento);
+}
+
+.v-sim-decision .celda[aria-pressed="true"] small {
+  color: var(--acento);
+}
+
+.v-sim-decision .pie-sim .boton {
+  flex: 1 1 0;
+}

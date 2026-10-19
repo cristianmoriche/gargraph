@@ -1,0 +1,217 @@
+/* Damage calc: dos tarjetas (atacante y defensor), movimiento, resultado y campo */
+
+.v-calc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-3);
+  padding-bottom: var(--espacio-6);
+}
+
+/* Etiqueta de cada bloque: Attacker, Defender, Move, Result */
+.v-calc .calc-rol {
+  margin: 0 0 var(--espacio-2);
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  line-height: 16px;
+  font-weight: var(--peso-semibold);
+  text-transform: uppercase;
+}
+
+/* Sprite, buscador de Pokémon y tipos */
+.v-calc .calc-cabeza {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+.v-calc .calc-cabeza-texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--espacio-2);
+  min-width: 0;
+}
+
+.v-calc .calc-especie {
+  width: 100%;
+  font-weight: var(--peso-semibold);
+}
+
+.v-calc .calc-tarjeta .nota {
+  margin: var(--espacio-2) 0 0;
+}
+
+/* Objeto, habilidad, naturaleza y teratipo en dos columnas */
+.v-calc .calc-rejilla {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-3);
+}
+
+.v-calc .calc-rejilla .campo {
+  min-width: 0;
+}
+
+/* Objeto y habilidad, a todo el ancho: sus nombres son largos */
+.v-calc .calc-rejilla .campo:nth-child(-n + 2) {
+  grid-column: 1 / -1;
+}
+
+.v-calc .calc-rejilla input,
+.v-calc .calc-rejilla select {
+  width: 100%;
+  min-width: 0;
+}
+
+.v-calc .calc-reparto-titulo {
+  margin: var(--espacio-3) 0 var(--espacio-1);
+}
+
+/* Seis casillas de reparto: PS, Atk, Def, SpA, SpD, Spe */
+.v-calc .calc-reparto {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--espacio-1);
+}
+
+.v-calc .calc-celda {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  min-width: 0;
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  text-align: center;
+}
+
+.v-calc .calc-celda input {
+  width: 100%;
+  min-width: 0;
+  padding: 0 2px;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.v-calc .calc-celda input::-webkit-outer-spin-button,
+.v-calc .calc-celda input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.v-calc .calc-total.error {
+  color: var(--error);
+}
+
+/* Subidas de -6 a +6: -6, -, valor actual (lo pone a 0), +, +6 */
+.v-calc .calc-subida {
+  margin-top: var(--espacio-3);
+}
+
+.v-calc .calc-subida-etiqueta {
+  display: block;
+  margin-bottom: var(--espacio-1);
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+}
+
+.v-calc .calc-subida-botones {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--espacio-1);
+}
+
+.v-calc .calc-subida-botones .boton {
+  padding: 0;
+}
+
+.v-calc .calc-subida-valor {
+  border-color: var(--borde-fuerte);
+  background: var(--superficie-alt);
+  font-weight: var(--peso-semibold);
+}
+
+/* Movimientos del set: dos columnas, el elegido en acento */
+.v-calc .calc-movimientos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: visible;
+  gap: var(--espacio-2);
+  margin-bottom: var(--espacio-3);
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.v-calc .calc-movimientos .segmento {
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.v-calc .calc-movimientos .nada {
+  grid-column: 1 / -1;
+}
+
+.v-calc .calc-movimiento .campo input {
+  width: 100%;
+}
+
+/* Resultado */
+.v-calc .calc-ko {
+  margin: 0;
+  font-size: var(--texto-lg);
+  line-height: 24px;
+  font-weight: var(--peso-negrita);
+}
+
+.v-calc .calc-barra {
+  display: flex;
+  height: 12px;
+  margin: var(--espacio-3) 0;
+  overflow: hidden;
+  border-radius: var(--radio-xs);
+  background: var(--superficie-alt);
+}
+
+.v-calc .calc-barra-min,
+.v-calc .calc-barra-rango {
+  display: block;
+  height: 100%;
+  background: var(--acento);
+  transition: width 300ms ease;
+}
+
+.v-calc .calc-barra-rango {
+  opacity: 0.4;
+}
+
+.v-calc .calc-rango {
+  margin: 0;
+  font-size: var(--texto-base);
+  line-height: 22px;
+  font-weight: var(--peso-medio);
+}
+
+.v-calc .calc-resultado .nota {
+  margin: var(--espacio-1) 0 0;
+}
+
+.v-calc .calc-notas {
+  margin: var(--espacio-3) 0 0;
+  padding-left: var(--espacio-4);
+}
+
+.v-calc .calc-notas:empty {
+  display: none;
+}
+
+.v-calc .calc-campo .campo-etiqueta {
+  margin: var(--espacio-3) 0 var(--espacio-1);
+}
+
+.v-calc .calc-campo .campo-etiqueta:first-child {
+  margin-top: 0;
+}

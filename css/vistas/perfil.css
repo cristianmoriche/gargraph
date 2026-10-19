@@ -1,0 +1,138 @@
+/* Pantalla Perfil (js/vistas/perfil.js): ajustes con aspecto de app nativa, con las piezas comunes */
+
+/* Entrenador: avatar y textos. Los nombres largos parten la línea en vez de salirse (V1) */
+.v-perfil .v-perfil-entrenador {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-4);
+}
+
+.v-perfil .v-perfil-entrenador-texto {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.v-perfil .v-perfil-nombre {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+  line-height: 24px;
+}
+
+.v-perfil .v-perfil-dato {
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+
+/* Cuatro cifras en fila, separadas por una raya */
+.v-perfil .v-perfil-cifras {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-3) 0;
+}
+
+.v-perfil .v-perfil-cifras > div {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 0 var(--espacio-1);
+}
+
+.v-perfil .v-perfil-cifras > div + div {
+  border-left: var(--borde-fino);
+}
+
+.v-perfil .v-perfil-cifras strong {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+  line-height: 24px;
+  font-variant-numeric: var(--numeros-tabulares);
+  white-space: nowrap;
+}
+
+.v-perfil .v-perfil-cifras span {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  line-height: 16px;
+}
+
+.v-perfil .v-perfil-nota-cifras {
+  margin-top: var(--espacio-2);
+  text-align: center;
+}
+
+/* Selector de tema */
+.v-perfil .v-perfil-tema {
+  margin-top: var(--espacio-2);
+}
+
+.v-perfil .v-perfil-nota {
+  margin-top: var(--espacio-2);
+}
+
+/* Favoritos: fichas que pasan a la línea siguiente */
+.v-perfil .v-perfil-favoritos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+}
+
+.v-perfil .v-perfil-favoritos .chip {
+  max-width: 100%;
+}
+
+.v-perfil .v-perfil-favoritos .chip span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Pasos para instalarla */
+.v-perfil .v-perfil-pasos {
+  display: grid;
+  gap: var(--espacio-2);
+  padding-left: calc(var(--espacio-4) + 20px);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+
+.v-perfil .v-perfil-pasos .icono {
+  width: 16px;
+  height: 16px;
+  vertical-align: -3px;
+}
+
+/* Copia de seguridad */
+.v-perfil .v-perfil-copia {
+  display: grid;
+  gap: var(--espacio-3);
+}
+
+/* Acerca de */
+.v-perfil .v-perfil-acerca {
+  display: grid;
+  gap: var(--espacio-3);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+
+.v-perfil .v-perfil-subtitulo {
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-semibold);
+}
+
+.v-perfil .v-perfil-apis {
+  display: grid;
+  gap: var(--espacio-2);
+  padding-left: var(--espacio-4);
+  color: var(--texto-suave);
+}
+
+.v-perfil .v-perfil-apis strong {
+  color: var(--texto);
+  font-weight: var(--peso-semibold);
+}

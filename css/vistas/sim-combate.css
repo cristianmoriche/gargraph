@@ -1,0 +1,793 @@
+/* Gargraph · simulador: el combate (#/simulador/combate). Diseño simple y plano (disenos/gemini/10-sim-combate.jpg).
+   Todos los selectores empiezan por .v-sim-combate. Colores, tamaños y radios: las variables de ESTILO.md (css/estilos.css).
+   Se mueve poco y siempre con transform y opacity: ver «Animaciones» al final. --ritmo (lo pone combate.js) acorta
+   todas las duraciones según la velocidad elegida (x1, x2, x4). */
+
+.v-sim-combate [hidden] {
+  display: none !important;
+}
+
+.v-sim-combate .fallo-accion {
+  margin-top: var(--espacio-4);
+}
+
+/* --- Turno, marcador y probabilidad ------------------------------------- */
+
+.v-sim-combate .resumen {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  overflow: hidden;
+  border: var(--borde-fino);
+  border-radius: var(--radio-lg);
+  background: var(--superficie);
+}
+
+.v-sim-combate .resumen-celda {
+  min-width: 0;
+  padding: var(--espacio-2) var(--espacio-3);
+  text-align: center;
+}
+
+.v-sim-combate .resumen-celda + .resumen-celda {
+  border-left: var(--borde-fino);
+}
+
+.v-sim-combate .resumen-etiqueta {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  line-height: 16px;
+}
+
+.v-sim-combate .resumen-valor {
+  font-size: var(--texto-base);
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.v-sim-combate .reloj,
+.v-sim-combate .marcador b,
+.v-sim-combate .prob-valor {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-negrita);
+}
+
+.v-sim-combate .resumen-de {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+}
+
+.v-sim-combate .prob {
+  background: var(--acento-suave);
+}
+
+.v-sim-combate .prob .resumen-etiqueta,
+.v-sim-combate .prob-valor {
+  color: var(--acento);
+}
+
+/* --- Un formato de dobles jugado como individual -------------------------- */
+
+.v-sim-combate .como-individual {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-2);
+  margin-bottom: var(--espacio-3);
+  padding: var(--espacio-2) var(--espacio-3);
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  background: var(--acento-suave);
+  color: var(--texto);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+
+.v-sim-combate .como-individual svg {
+  flex: none;
+  color: var(--acento);
+}
+
+.v-sim-combate .como-individual b {
+  font-weight: var(--peso-semibold);
+}
+
+/* --- El campo ------------------------------------------------------------
+   Como en 10-sim-combate.jpg: el rival arriba a la derecha y de frente, con su placa encima;
+   el tuyo abajo a la izquierda, de espaldas y más grande, con su placa debajo.
+   El fondo es plano, de colores sólidos de los temas: la pared del estadio, el suelo (con un toque de --exito),
+   la raya del horizonte y una plataforma elíptica bajo cada Pokémon. Sin degradados, sombras ni imágenes. */
+
+.v-sim-combate .escenario {
+  position: relative;
+  height: 392px;
+  margin-top: var(--espacio-3);
+  overflow: hidden;
+  border: var(--borde-fino);
+  border-radius: var(--radio-lg);
+  background: var(--superficie-alt);
+}
+
+.v-sim-combate .campo {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--exito) 12%, var(--superficie-alt));
+  pointer-events: none;
+}
+
+/* la pared del fondo, hasta el horizonte */
+.v-sim-combate .campo::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 124px;
+  border-bottom: 1px solid var(--borde-fuerte);
+  background: var(--superficie-alt);
+}
+
+.v-sim-combate .plataforma {
+  position: absolute;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--exito) 34%, var(--superficie-alt));
+}
+
+/* el aro de dentro de la plataforma */
+.v-sim-combate .plataforma::after {
+  content: "";
+  position: absolute;
+  inset: 18% 14%;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: 50%;
+}
+
+/* bajo los pies de cada figura (los sprites de 96 px dejan un margen bajo los pies) */
+.v-sim-combate .plataforma.rival {
+  top: 144px;
+  right: 0;
+  width: 190px;
+  height: 52px;
+}
+
+.v-sim-combate .plataforma.yo {
+  bottom: 70px;
+  left: -14px;
+  width: 232px;
+  height: 64px;
+}
+
+.v-sim-combate .luchador {
+  position: absolute;
+  inset: 0;
+  transition: opacity var(--transicion);
+}
+
+/* todavía no ha salido nadie por ese lado */
+.v-sim-combate .luchador.sin-salir {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.v-sim-combate .figura {
+  position: absolute;
+  transition: opacity var(--transicion);
+}
+
+/* Los sprites miden 96 px: se agrandan hasta llenar su hueco, sin suavizar */
+.v-sim-combate .figura img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom;
+  image-rendering: pixelated;
+}
+
+.v-sim-combate .figura img.ilustracion {
+  image-rendering: auto;
+}
+
+/* sin sprite de espaldas: el de frente, girado para que mire al rival */
+.v-sim-combate .figura img.girada {
+  transform: scaleX(-1);
+}
+
+/* Ninguna imagen ha cargado: un círculo con las iniciales, que no se confunde con el Pokémon */
+.v-sim-combate .figura.sin-imagen::after {
+  content: attr(data-iniciales);
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  transform: translateX(-50%);
+  border: var(--borde-fino);
+  border-radius: 50%;
+  background: var(--superficie);
+  color: var(--texto-tenue);
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+}
+
+/* Debilitado: se queda caído y desvaído, y su placa lo dice (anim-cae termina justo aquí) */
+.v-sim-combate .luchador.ko .figura {
+  opacity: 0.35;
+  transform: translateY(20px);
+}
+
+.v-sim-combate .luchador[data-lado="rival"] .figura {
+  top: 84px;
+  right: var(--espacio-3);
+  width: 156px;
+  height: 156px;
+}
+
+.v-sim-combate .luchador[data-lado="yo"] .figura {
+  bottom: 64px;
+  left: 0;
+  width: 204px;
+  height: 204px;
+}
+
+.v-sim-combate .placa {
+  position: absolute;
+  z-index: 1;
+  width: 186px;
+  padding: 6px var(--espacio-3);
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  background: var(--superficie);
+}
+
+.v-sim-combate .luchador[data-lado="rival"] .placa {
+  top: var(--espacio-3);
+  right: var(--espacio-3);
+}
+
+.v-sim-combate .luchador[data-lado="yo"] .placa {
+  bottom: var(--espacio-3);
+  left: var(--espacio-3);
+}
+
+.v-sim-combate .luchador.ko .placa {
+  color: var(--texto-suave);
+}
+
+/* con teratipo, la placa toma el color del teratipo */
+.v-sim-combate .luchador.tera .placa {
+  border-color: var(--tc);
+}
+
+.v-sim-combate .placa-linea {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--espacio-2);
+}
+
+.v-sim-combate .placa-nombre {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  line-height: 22px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v-sim-combate .placa-nivel {
+  flex: none;
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+}
+
+.v-sim-combate .placa-tipos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  margin: var(--espacio-1) 0 var(--espacio-2);
+}
+
+.v-sim-combate .placa-tipos:empty {
+  display: none;
+}
+
+.v-sim-combate .ps {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.v-sim-combate .ps-etiqueta {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semibold);
+}
+
+.v-sim-combate .ps-valor {
+  min-width: 40px;
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semibold);
+  text-align: right;
+}
+
+.v-sim-combate .barra-ps {
+  flex: 1;
+  height: 8px;
+  overflow: hidden;
+  border-radius: var(--radio-xs);
+  background: var(--borde);
+}
+
+.v-sim-combate .barra-ps i {
+  display: block;
+  height: 100%;
+  background: var(--exito);
+  transform-origin: left;
+  transition: transform calc(500ms * var(--ritmo, 1)) ease-out, background-color var(--transicion);
+}
+
+.v-sim-combate .barra-ps[data-nivel="bajo"] i {
+  background: var(--error);
+}
+
+/* Rótulo de habilidad u objeto: pequeño, a un lado de la placa */
+.v-sim-combate .rotulos {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  max-width: 140px;
+}
+
+.v-sim-combate .luchador[data-lado="rival"] .rotulos {
+  top: var(--espacio-3);
+  left: var(--espacio-3);
+}
+
+.v-sim-combate .luchador[data-lado="yo"] .rotulos {
+  right: var(--espacio-3);
+  bottom: var(--espacio-3);
+}
+
+.v-sim-combate .rotulo {
+  padding: var(--espacio-1) var(--espacio-3);
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  background: var(--superficie);
+  font-size: var(--texto-xs);
+  line-height: 16px;
+}
+
+.v-sim-combate .rotulo small {
+  display: block;
+  color: var(--texto-suave);
+  font-size: var(--texto-2xs);
+  line-height: 14px;
+}
+
+.v-sim-combate .rotulo b {
+  font-weight: var(--peso-semibold);
+  overflow-wrap: anywhere;
+}
+
+/* --- La jugada de la IA --------------------------------------------------- */
+
+.v-sim-combate .franja {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border: var(--borde-foco);
+  border-radius: var(--radio-lg);
+  background: var(--superficie);
+}
+
+.v-sim-combate .franja[data-lado="rival"] {
+  border: 1.5px solid var(--borde-fuerte);
+}
+
+.v-sim-combate .franja-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.v-sim-combate .franja-jugada {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+  line-height: 24px;
+  overflow-wrap: break-word;
+}
+
+.v-sim-combate .franja-porque {
+  margin-top: var(--espacio-1);
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+
+.v-sim-combate .por-que {
+  flex: none;
+}
+
+/* --- El final -------------------------------------------------------------- */
+
+.v-sim-combate .final {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-lg);
+  background: var(--superficie-alt);
+}
+
+.v-sim-combate .final[data-resultado="victoria"] {
+  border-color: var(--exito);
+  background: var(--exito-suave);
+  color: var(--exito);
+}
+
+.v-sim-combate .final[data-resultado="derrota"] {
+  border-color: var(--error);
+  background: var(--error-suave);
+  color: var(--error);
+}
+
+.v-sim-combate .final-texto {
+  min-width: 0;
+}
+
+.v-sim-combate .final-texto b {
+  display: block;
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-negrita);
+  line-height: 24px;
+}
+
+.v-sim-combate .final-sub {
+  font-size: var(--texto-sm);
+}
+
+.v-sim-combate .final .boton {
+  flex: none;
+}
+
+/* «100 combates»: cómo va la serie que se juega mientras se ve este */
+.v-sim-combate .serie {
+  margin-top: var(--espacio-2);
+}
+
+/* --- Registro del turno ------------------------------------------------------ */
+
+.v-sim-combate .registro {
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-4);
+  border: var(--borde-fino);
+  border-radius: var(--radio-lg);
+  background: var(--superficie);
+}
+
+.v-sim-combate .registro-titulo {
+  padding-bottom: var(--espacio-2);
+  border-bottom: var(--borde-fino);
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  line-height: 22px;
+}
+
+.v-sim-combate .registro ol {
+  list-style: none;
+}
+
+.v-sim-combate .registro li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--espacio-2);
+  padding: 6px 0;
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+
+.v-sim-combate .registro li + li {
+  border-top: var(--borde-fino);
+}
+
+.v-sim-combate .registro-texto {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.v-sim-combate .registro-vacio {
+  color: var(--texto-tenue);
+}
+
+/* --- Controles: fijos justo encima de la barra inferior ---------------------- */
+
+.v-sim-combate .controles {
+  position: sticky;
+  bottom: calc(var(--alto-barra-inferior) + env(safe-area-inset-bottom));
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin: var(--espacio-3) calc(-1 * var(--espacio-4)) 0;
+  padding: var(--espacio-2) var(--espacio-4);
+  border-top: var(--borde-fino);
+  background: var(--fondo);
+}
+
+.v-sim-combate .controles .boton {
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  min-height: 52px;
+  padding: var(--espacio-1) 2px;
+  font-size: var(--texto-2xs);
+  font-weight: var(--peso-medio);
+  line-height: 14px;
+}
+
+.v-sim-combate .controles .boton b {
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  line-height: 20px;
+}
+
+/* --- Los dos equipos ---------------------------------------------------------- */
+
+.v-sim-combate .bancos {
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-3);
+  border: var(--borde-fino);
+  border-radius: var(--radio-lg);
+  background: var(--superficie);
+}
+
+.v-sim-combate .banco + .banco {
+  margin-top: var(--espacio-3);
+}
+
+.v-sim-combate .banco-titulo {
+  margin-bottom: 6px;
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semibold);
+  line-height: 16px;
+}
+
+.v-sim-combate .banco ul {
+  display: grid;
+  grid-template-columns: repeat(var(--plazas, 6), minmax(0, 1fr));
+  gap: var(--espacio-1);
+  list-style: none;
+}
+
+.v-sim-combate .plaza {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  padding: var(--espacio-1) 2px;
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  transition: opacity var(--transicion), border-color var(--transicion);
+}
+
+.v-sim-combate .plaza-barra {
+  display: block;
+  width: 80%;
+  height: 4px;
+  overflow: hidden;
+  border-radius: var(--radio-xs);
+  background: var(--borde);
+}
+
+.v-sim-combate .plaza-barra i {
+  display: block;
+  height: 100%;
+  background: var(--exito);
+  transform-origin: left;
+  transition: transform calc(500ms * var(--ritmo, 1)) ease-out;
+}
+
+.v-sim-combate .plaza-ps {
+  color: var(--texto-suave);
+  font-size: var(--texto-2xs);
+  font-weight: var(--peso-medio);
+  line-height: 14px;
+}
+
+.v-sim-combate .plaza.activo {
+  border-color: var(--acento);
+}
+
+.v-sim-combate .plaza.ko {
+  opacity: 0.4;
+}
+
+/* --- Quién juega (también en el análisis: lo pinta js/vistas/sim/quien-juega.js) ------- */
+
+.v-sim-combate .seleccion,
+.v-sim-resultado .seleccion {
+  margin-top: var(--espacio-3);
+}
+
+.v-sim-resultado .seleccion {
+  margin-top: 0;
+}
+
+.v-sim-combate .seleccion-titulo,
+.v-sim-resultado .seleccion-titulo {
+  margin-bottom: var(--espacio-1);
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+  line-height: 24px;
+}
+
+.v-sim-combate .sel-lado,
+.v-sim-resultado .sel-lado {
+  margin-top: var(--espacio-3);
+}
+
+.v-sim-combate .sel-lado-titulo,
+.v-sim-resultado .sel-lado-titulo {
+  margin-bottom: var(--espacio-2);
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  line-height: 22px;
+}
+
+.v-sim-combate .sel-banco-titulo,
+.v-sim-resultado .sel-banco-titulo {
+  margin: var(--espacio-2) 0 var(--espacio-1);
+}
+
+.v-sim-combate .sel-pokemon,
+.v-sim-resultado .sel-pokemon {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3);
+}
+
+.v-sim-combate .sel-pokemon .sprite,
+.v-sim-resultado .sel-pokemon .sprite {
+  flex: none;
+}
+
+.v-sim-combate .sel-texto,
+.v-sim-resultado .sel-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.v-sim-combate .sel-nombre,
+.v-sim-resultado .sel-nombre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
+  font-size: var(--texto-base);
+  line-height: 22px;
+}
+
+.v-sim-combate .sel-porque,
+.v-sim-resultado .sel-porque {
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+  overflow-wrap: break-word;
+}
+
+.v-sim-combate .sel-banco,
+.v-sim-resultado .sel-banco {
+  opacity: 0.8;
+}
+
+/* --- Animaciones ---------------------------------------------------------------------
+   Solo transform y opacity, cortas y sin brillos. Cada una dura lo que dice --ritmo (0,7 ÷ velocidad), así
+   siguen a x1, x2 y x4. combate.js pone y quita estas clases en la figura; los nombres de cada @keyframes
+   empiezan por el de la clase. Con «reducir movimiento» no hay ninguna. */
+
+/* Entrada: el Pokémon llega desde su lado, subiendo un poco */
+.v-sim-combate .figura.anim-entra {
+  animation: anim-entra-yo calc(500ms * var(--ritmo, 1)) ease-out;
+}
+
+.v-sim-combate .luchador[data-lado="rival"] .figura.anim-entra {
+  animation-name: anim-entra-rival;
+}
+
+@keyframes anim-entra-yo {
+  from { opacity: 0; transform: translate(-28px, 10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes anim-entra-rival {
+  from { opacity: 0; transform: translate(28px, -10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Movimiento de ataque: un avance corto hacia el rival y vuelta */
+.v-sim-combate .figura.anim-ataca {
+  animation: anim-ataca-yo calc(400ms * var(--ritmo, 1)) ease-in-out;
+}
+
+.v-sim-combate .luchador[data-lado="rival"] .figura.anim-ataca {
+  animation-name: anim-ataca-rival;
+}
+
+@keyframes anim-ataca-yo {
+  50% { transform: translate(28px, -14px); }
+}
+
+@keyframes anim-ataca-rival {
+  50% { transform: translate(-28px, 14px); }
+}
+
+/* Movimiento de estado: un saltito en el sitio */
+.v-sim-combate .figura.anim-prepara {
+  animation: anim-prepara calc(400ms * var(--ritmo, 1)) ease-in-out;
+}
+
+@keyframes anim-prepara {
+  50% { transform: translateY(-10px); }
+}
+
+/* Recibe un golpe: sacudida corta y parpadeo */
+.v-sim-combate .figura.anim-golpe {
+  animation: anim-golpe calc(400ms * var(--ritmo, 1)) linear;
+}
+
+@keyframes anim-golpe {
+  0%, 100% { opacity: 1; transform: none; }
+  15% { opacity: 0.3; transform: translateX(-7px); }
+  30% { opacity: 1; transform: translateX(6px); }
+  45% { opacity: 0.3; transform: translateX(-5px); }
+  60% { opacity: 1; transform: translateX(4px); }
+  80% { opacity: 1; transform: translateX(-2px); }
+}
+
+/* Se debilita: cae y se desvanece hasta quedar como en .luchador.ko */
+.v-sim-combate .figura.anim-cae {
+  animation: anim-cae calc(600ms * var(--ritmo, 1)) ease-in;
+}
+
+@keyframes anim-cae {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0.35; transform: translateY(20px); }
+}
+
+/* Megaevolución o teracristalización: la figura parpadea una vez y crece un poco */
+.v-sim-combate .figura.anim-transforma {
+  animation: anim-transforma calc(450ms * var(--ritmo, 1)) ease-in-out;
+}
+
+@keyframes anim-transforma {
+  0%, 100% { opacity: 1; transform: none; }
+  35% { opacity: 0.1; transform: scale(1.08); }
+  60% { opacity: 1; transform: scale(1.08); }
+}
+
+/* Los rótulos de habilidad y de objeto aparecen subiendo un poco */
+.v-sim-combate .rotulo {
+  animation: anim-rotulo calc(300ms * var(--ritmo, 1)) ease-out;
+}
+
+@keyframes anim-rotulo {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v-sim-combate .figura,
+  .v-sim-combate .rotulo {
+    animation: none !important;
+  }
+}

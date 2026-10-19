@@ -1,0 +1,20 @@
+{
+  "name": "Gargraph",
+  "short_name": "Gargraph",
+  "description": "Competitive Pokédex: stats, tier list, synergies, teams, and battles.",
+  "lang": "en",
+  "dir": "ltr",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8F7F4",
+  "theme_color": "#F8F7F4",
+  "categories": ["games", "utilities"],
+  "icons": [
+    { "src": "img/icono-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "img/icono-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "img/icono-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

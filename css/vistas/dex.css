@@ -1,0 +1,394 @@
+/* Gargraph · Dex (#/dex y #/dex/<pokemon>): el buscador y la ficha, con las piezas comunes de css/estilos.css.
+   Todos los selectores empiezan por .v-dex. Colores, tamaños y radios: las variables de ESTILO.md. */
+
+.v-dex h1,
+.v-dex h2,
+.v-dex p { margin: 0; }
+
+/* ------------------------------------------------------------------------
+   Buscador
+   ------------------------------------------------------------------------ */
+
+.v-dex .dex-buscar {
+  display: flex;
+  gap: var(--espacio-2);
+}
+
+/* Favoritos: rejilla de cinco columnas */
+.v-dex .dex-favoritos {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--espacio-2);
+}
+
+.v-dex .dex-favorito {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espacio-1);
+  min-width: 0;
+  padding: var(--espacio-2) 2px; /* 2 px a los lados: así «Gholdengo» cabe en una línea */
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  background: var(--superficie);
+  transition: background-color var(--transicion), transform var(--transicion);
+}
+
+.v-dex .dex-favorito:active { background: var(--superficie-alt); transform: var(--pulsado); }
+
+.v-dex .dex-favorito span:last-child {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  font-size: var(--texto-2xs);
+  font-weight: var(--peso-medio);
+  line-height: 14px;
+  text-align: center;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.v-dex .dex-numero {
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-normal);
+}
+
+/* ------------------------------------------------------------------------
+   Ficha: cabecera y acciones
+   ------------------------------------------------------------------------ */
+
+.v-dex .dex-ficha-fila {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-4);
+}
+
+.v-dex .dex-arte {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  overflow: hidden;
+  border-radius: var(--radio-md);
+  background: var(--superficie-alt);
+}
+
+.v-dex .dex-arte img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.v-dex .dex-ficha-texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.v-dex .dex-nombre {
+  overflow-wrap: anywhere;
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-negrita);
+  line-height: 28px;
+}
+
+.v-dex .dex-nombre .dex-numero { font-size: var(--texto-base); }
+
+.v-dex .dex-uso {
+  margin-top: var(--espacio-3);
+  padding-top: var(--espacio-3);
+  border-top: var(--borde-fino);
+}
+
+.v-dex .dex-uso-linea {
+  font-size: var(--texto-base);
+  font-weight: var(--peso-medio);
+}
+
+.v-dex .dex-etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-3);
+}
+
+.v-dex .dex-acciones { margin-top: var(--espacio-3); }
+
+/* Tres botones que se reparten el ancho según su texto */
+.v-dex .dex-acciones > .boton {
+  flex: 1 1 auto;
+  gap: var(--espacio-1);
+  padding: 0 var(--espacio-2);
+  font-size: var(--texto-sm);
+}
+
+.v-dex .dex-acciones > .boton[aria-pressed="true"] {
+  border-color: var(--acento);
+  background: var(--acento-suave);
+  color: var(--acento);
+}
+
+/* ------------------------------------------------------------------------
+   Ficha: estadísticas
+   ------------------------------------------------------------------------ */
+
+.v-dex .dex-stats { list-style: none; }
+
+.v-dex .dex-stat {
+  display: grid;
+  grid-template-columns: 76px 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 0 var(--espacio-2);
+  min-height: 32px;
+}
+
+.v-dex .dex-stats.con-reales .dex-stat { grid-template-columns: 76px 32px minmax(0, 1fr) 36px 40px; }
+
+.v-dex .dex-stat-nombre { font-size: var(--texto-sm); }
+
+.v-dex .dex-stat-base,
+.v-dex .dex-stat-ev,
+.v-dex .dex-stat-real { text-align: right; }
+
+.v-dex .dex-stat-base { font-size: var(--texto-base); font-weight: var(--peso-medio); }
+
+.v-dex .dex-stat-ev { color: var(--texto-suave); font-size: var(--texto-sm); }
+
+.v-dex .dex-stat-real { font-size: var(--texto-base); font-weight: var(--peso-semibold); }
+
+.v-dex .dex-stat-real small { margin-left: 1px; font-size: var(--texto-2xs); }
+.v-dex .dex-stat-real .sube { color: var(--exito); }
+.v-dex .dex-stat-real .baja { color: var(--error); }
+
+.v-dex .dex-stat-cab {
+  min-height: 20px;
+  color: var(--texto-tenue);
+  font-size: var(--texto-xs);
+  line-height: 16px;
+  text-align: right;
+}
+
+.v-dex .dex-stat-cab span { text-align: right; }
+
+.v-dex .dex-stat-total {
+  min-height: 36px;
+  margin-top: var(--espacio-1);
+  padding-top: var(--espacio-2);
+  border-top: var(--borde-fino);
+}
+
+.v-dex .dex-stat-total .dex-stat-nombre { font-weight: var(--peso-semibold); }
+
+.v-dex .dex-stat-suma {
+  grid-column: 2 / -1;
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-semibold);
+  line-height: 28px;
+}
+
+.v-dex .dex-nota { margin-top: var(--espacio-2); }
+.v-dex .dex-nota b { color: var(--texto); font-weight: var(--peso-semibold); }
+
+/* ------------------------------------------------------------------------
+   Ficha: eficacia de tipos
+   ------------------------------------------------------------------------ */
+
+.v-dex .dex-ef {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--espacio-3);
+  padding: 6px 0;
+}
+
+.v-dex .dex-ef:first-child { padding-top: 0; }
+.v-dex .dex-ef:last-child { padding-bottom: 0; }
+
+.v-dex .dex-ef-etiqueta {
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  line-height: 18px;
+}
+
+.v-dex .dex-ef .tipos { gap: 6px var(--espacio-1); }
+
+.v-dex .dex-ef-titulo {
+  margin-top: var(--espacio-3);
+  padding-top: var(--espacio-3);
+  border-top: var(--borde-fino);
+}
+
+/* ------------------------------------------------------------------------
+   Ficha: datos competitivos (plegables)
+   ------------------------------------------------------------------------ */
+
+.v-dex .plegables { border-top: var(--borde-fino); }
+
+.v-dex .plegable-contenido { padding-top: var(--espacio-1); }
+
+.v-dex .plegable-contenido > .dex-nota:first-child { margin: 0 0 var(--espacio-2); }
+
+.v-dex .fila-texto .barra { margin-top: 6px; }
+
+.v-dex .dex-movimiento {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Fila de Pokémon con notas debajo del nombre: el sprite y el dato se quedan arriba */
+.v-dex .fila-pokemon {
+  align-items: flex-start;
+  padding-top: var(--espacio-2);
+  padding-bottom: var(--espacio-2);
+}
+
+.v-dex .fila-pokemon-dato { padding-top: var(--espacio-1); }
+
+.v-dex .dex-formas { margin-top: var(--espacio-2); }
+
+.v-dex #otros-formatos {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.v-dex .dex-datos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-2);
+  margin: 0;
+}
+
+.v-dex .dex-datos > div {
+  padding: var(--espacio-2) var(--espacio-3);
+  border-radius: var(--radio-md);
+  background: var(--superficie-alt);
+}
+
+.v-dex .dex-datos dt {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  line-height: 16px;
+}
+
+.v-dex .dex-datos dd {
+  margin: 0;
+  font-size: var(--texto-base);
+}
+
+.v-dex .dex-texto {
+  margin-top: var(--espacio-3);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+
+.v-dex .dex-texto small { color: var(--texto-suave); }
+
+.v-dex .dex-fuente { margin-top: var(--espacio-4); }
+
+/* Sin favoritos ni recientes: el aviso va separado del buscador */
+.v-dex .vacio { margin-top: var(--espacio-6); }
+
+/* ------------------------------------------------------------------------
+   Dex: tendencias del mes (Trending this month)
+   ------------------------------------------------------------------------ */
+
+.v-dex .dex-tendencia-titulo {
+  padding: var(--espacio-3) var(--espacio-4) var(--espacio-1);
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semibold);
+  line-height: 16px;
+}
+
+.v-dex .dex-tendencia .lista { list-style: none; margin: 0; padding: 0; }
+
+.v-dex .dex-cambio { font-weight: var(--peso-semibold); }
+.v-dex .dex-cambio.sube,
+.v-dex .dex-historial-cambio.sube { color: var(--exito); }
+.v-dex .dex-cambio.baja,
+.v-dex .dex-historial-cambio.baja { color: var(--error); }
+
+/* ------------------------------------------------------------------------
+   Ficha: botón de la calculadora, historial de uso, parejas y vecinos
+   ------------------------------------------------------------------------ */
+
+.v-dex .dex-calc { margin-top: var(--espacio-2); }
+
+.v-dex .dex-historial-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--espacio-1) var(--espacio-3);
+}
+
+.v-dex .dex-historial-dato {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-negrita);
+  line-height: 24px;
+}
+
+.v-dex .dex-historial-cambio {
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  line-height: 20px;
+}
+
+.v-dex .dex-grafica {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: var(--espacio-3) 0 var(--espacio-2);
+}
+
+.v-dex .dex-grafica-guia { stroke: var(--borde); stroke-width: 1; }
+.v-dex .dex-grafica-texto { fill: var(--texto-suave); font-size: var(--texto-2xs); }
+.v-dex .dex-grafica-linea { fill: none; stroke: var(--acento); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.v-dex .dex-grafica-punto { fill: var(--superficie); stroke: var(--acento); stroke-width: 2; }
+.v-dex .dex-grafica-punto.actual { fill: var(--acento); }
+
+.v-dex .dex-pareja-sprites { display: flex; flex: none; gap: var(--espacio-1); }
+
+/* Anterior y siguiente en la clasificación: dos tarjetas que se reparten el ancho */
+.v-dex .dex-vecinos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-2);
+}
+
+.v-dex .dex-vecino {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-height: var(--alto-tactil-min);
+  min-width: 0;
+  padding: var(--espacio-3) var(--espacio-2);
+  transition: background-color var(--transicion), transform var(--transicion);
+}
+
+.v-dex .dex-vecino:active { background: var(--superficie-alt); transform: var(--pulsado); }
+.v-dex .dex-vecino.siguiente { grid-column: 2; }
+.v-dex .dex-vecino.siguiente .dex-vecino-texto { text-align: right; }
+
+.v-dex .dex-vecino-texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.v-dex .dex-vecino-puesto { font-size: var(--texto-lg); font-weight: var(--peso-negrita); line-height: 24px; }
+.v-dex .dex-vecino-nombre { overflow-wrap: anywhere; font-size: var(--texto-sm); line-height: 20px; }
+
+.v-dex .dex-grafica-texto { stroke: none; font-weight: var(--peso-normal); }
+
+/* Los nombres de las parejas pueden ocupar dos líneas en vez de cortarse */
+.v-dex .dex-parejas .fila-pokemon-nombre { overflow: visible; white-space: normal; text-overflow: clip; }

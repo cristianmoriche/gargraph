@@ -1,0 +1,67 @@
+/* Clasificación: botones de grupo fijos arriba y filas con barra de uso */
+
+/* Botones S A B C D: se quedan arriba al hacer scroll, a todo el ancho de la columna */
+.v-tierlist .grupos-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--espacio-2);
+  margin: var(--espacio-3) calc(-1 * var(--espacio-4)) 0;
+  padding: var(--espacio-2) var(--espacio-4);
+  border-bottom: var(--borde-fino);
+  background: var(--fondo);
+}
+
+.v-tierlist .grupos-nav .boton {
+  padding: 0;
+}
+
+.v-tierlist .grupos-nav .boton[aria-pressed="true"] {
+  border-color: var(--acento);
+  background: var(--acento-relleno);
+  color: var(--texto-sobre-color);
+}
+
+.v-tierlist .explicacion {
+  margin-top: var(--espacio-3);
+}
+
+/* Cada grupo deja sitio a los botones fijos al saltar a él */
+.v-tierlist .grupo {
+  scroll-margin-top: calc(var(--alto-tactil-min) + var(--espacio-6));
+}
+
+/* Fila: puesto, sprite, nombre con tipos y % de uso; la barra va debajo, a lo ancho del nombre */
+.v-tierlist .fila-pokemon {
+  display: grid;
+  grid-template-columns: 24px 32px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--espacio-3);
+  row-gap: var(--espacio-1);
+  padding-top: var(--espacio-2);
+  padding-bottom: var(--espacio-2);
+}
+
+.v-tierlist .puesto {
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  text-align: right;
+}
+
+.v-tierlist .tipos {
+  flex-wrap: wrap;
+}
+
+.v-tierlist .uso-barra {
+  grid-column: 3 / -1;
+}
+
+.v-tierlist .uso-barra .barra {
+  height: var(--espacio-1);
+}
+
+.v-tierlist .pie {
+  margin-top: var(--espacio-6);
+}

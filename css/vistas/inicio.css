@@ -1,0 +1,139 @@
+/* Inicio: solo coloca las piezas comunes (ver COMPONENTES.md) */
+
+.v-inicio .nota {
+  margin-top: var(--espacio-2);
+}
+
+/* Núcleos: dos columnas de tarjetas con el trío y su porcentaje */
+.v-inicio .nucleos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-2);
+}
+
+.v-inicio .nucleo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espacio-2);
+  padding: var(--espacio-3) var(--espacio-2);
+}
+
+.v-inicio .nucleo-trio {
+  display: flex;
+  justify-content: center;
+}
+
+.v-inicio .nucleo-trio a {
+  display: grid;
+  place-items: center;
+  width: var(--alto-tactil-min);
+  height: var(--alto-tactil-min);
+}
+
+.v-inicio .nucleo-dato {
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+  text-align: center;
+}
+
+/* Repetición destacada */
+.v-inicio .repeticion-jugadores {
+  overflow-wrap: anywhere;
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+  line-height: 24px;
+}
+
+.v-inicio .repeticion-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-3);
+}
+
+.v-inicio .repeticion-pie .nota {
+  min-width: 0;
+  margin-top: 0;
+}
+
+.v-inicio .repeticion-pie .boton {
+  flex: none;
+}
+
+/* This month: frases y el sprite del n.º 1 */
+.v-inicio .mes {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+.v-inicio .mes-frases {
+  flex: 1;
+  min-width: 0;
+  padding-left: var(--espacio-4);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+  list-style: disc;
+}
+
+.v-inicio .mes-frases li + li {
+  margin-top: var(--espacio-2);
+}
+
+.v-inicio .mes .sprite {
+  flex: none;
+  align-self: flex-start;
+}
+
+/* Your battles */
+.v-inicio .combates .fila-titulo {
+  font-weight: var(--peso-semibold);
+}
+
+/* Quick tools: tres accesos iguales */
+.v-inicio .herramientas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.v-inicio .herramienta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-2);
+  min-height: 76px;
+  padding: var(--espacio-3) var(--espacio-1);
+  color: var(--texto);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  text-align: center;
+  text-decoration: none;
+  transition: background-color var(--transicion);
+}
+
+.v-inicio .herramienta + .herramienta {
+  border-left: var(--borde-fino);
+}
+
+.v-inicio .herramienta .icono {
+  color: var(--acento);
+}
+
+.v-inicio .herramienta:active {
+  background: var(--superficie-alt);
+}
+
+/* Búsquedas recientes */
+.v-inicio .recientes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+}
+
+.v-inicio .pie {
+  margin-top: var(--espacio-6);
+}

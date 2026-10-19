@@ -1,0 +1,1469 @@
+/* Gargraph · diseño simple (Gemini, 16/10/2026): superficies planas, bordes de 1 px, Inter y nada más.
+   Variables copiadas de disenos/gemini/ESTILO.md. Aquí va solo lo común a todas las pantallas;
+   lo propio de cada una está en css/vistas/<pantalla>.css. Las piezas se explican en
+   disenos/gemini/implementacion/COMPONENTES.md. Sin sombras, degradados, brillos ni clip-path. */
+
+/* ------------------------------------------------------------------------
+   Variables
+   ------------------------------------------------------------------------ */
+
+/* Tema principal: claro (papel cálido) */
+:root {
+  --fondo: #F8F7F4;
+  --superficie: #FFFFFF;
+  --superficie-alt: #F1EFEA;
+  --borde: #E4E2DD;
+  --borde-fuerte: #D0CEC7;
+  --texto: #18181B;
+  --texto-suave: #65646A;
+  --texto-tenue: #6B6970;
+  --acento: #2563EB;
+  --acento-relleno: #2563EB; /* fondo de los botones y controles con texto blanco encima */
+  --acento-suave: #EFF4FF;
+  --exito: #15803D;
+  --exito-suave: #DCFCE7;
+  --error: #B91C1C;
+  --error-suave: #FEE2E2;
+  /* Texto sobre --acento y sobre los colores de tipo: blanco en los dos temas (ESTILO.md, apartado 3) */
+  --texto-sobre-color: #FFFFFF;
+  color-scheme: light;
+}
+
+/* Tema contrario: oscuro (pizarra mate), elegido en Perfil… */
+[data-theme="dark"] {
+  --fondo: #111215;
+  --superficie: #181A1F;
+  --superficie-alt: #21242B;
+  --borde: #2A2D36;
+  --borde-fuerte: #3B3F4C;
+  --texto: #F3F4F6;
+  --texto-suave: #9CA3AF;
+  --texto-tenue: #8E95A3;
+  --acento: #5B9BFF; /* texto y bordes azules sobre fondo oscuro (el #3B82F6 de ESTILO.md no llegaba a 4,5 : 1) */
+  --acento-relleno: #2563EB;
+  --acento-suave: #1E293B;
+  --exito: #22C55E;
+  --exito-suave: #142E1F;
+  --error: #F87171; /* más claro que el #EF4444 de ESTILO.md: así llega a 4,5 : 1 sobre los fondos oscuros */
+  --error-suave: #311818;
+  color-scheme: dark;
+}
+
+/* …o el del sistema, si en Perfil está en «Automático» */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fondo: #111215;
+    --superficie: #181A1F;
+    --superficie-alt: #21242B;
+    --borde: #2A2D36;
+    --borde-fuerte: #3B3F4C;
+    --texto: #F3F4F6;
+    --texto-suave: #9CA3AF;
+    --texto-tenue: #8E95A3;
+    --acento: #5B9BFF; /* texto y bordes azules sobre fondo oscuro (el #3B82F6 de ESTILO.md no llegaba a 4,5 : 1) */
+    --acento-relleno: #2563EB;
+    --acento-suave: #1E293B;
+    --exito: #22C55E;
+    --exito-suave: #142E1F;
+    --error: #F87171; /* más claro que el #EF4444 de ESTILO.md: así llega a 4,5 : 1 sobre los fondos oscuros */
+    --error-suave: #311818;
+    color-scheme: dark;
+  }
+}
+
+/* Colores de los 18 tipos, para texto blanco de 11 px (contraste de 4,5 : 1 como mínimo; los de ESTILO.md se oscurecieron un poco en 8 tipos) */
+:root {
+  --tipo-normal: #6D6D5E;
+  --tipo-fuego: #CA4D1C;
+  --tipo-agua: #2970CC;
+  --tipo-planta: #3A853D;
+  --tipo-electrico: #996C00;
+  --tipo-hielo: #28818D;
+  --tipo-lucha: #A82E26;
+  --tipo-veneno: #883997;
+  --tipo-tierra: #9D6B24;
+  --tipo-volador: #5B6FC2;
+  --tipo-psiquico: #D13666;
+  --tipo-bicho: #627F17;
+  --tipo-roca: #887331;
+  --tipo-fantasma: #58437A;
+  --tipo-dragon: #4E38B8;
+  --tipo-siniestro: #4F3F34;
+  --tipo-acero: #5A738E;
+  --tipo-hada: #BC507F;
+}
+
+/* Tipografía: una sola familia, Inter, con números tabulares */
+:root {
+  --fuente-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --numeros-tabulares: tabular-nums;
+
+  --peso-normal: 400;
+  --peso-medio: 500;
+  --peso-semibold: 600;
+  --peso-negrita: 700;
+
+  --texto-2xs: 11px;  /* line-height 14px: insignias de tipo, etiquetas de la barra inferior */
+  --texto-xs: 12px;   /* line-height 16px: cabeceras de tabla (EVs, IVs), metadatos, formatos */
+  --texto-sm: 14px;   /* line-height 20px: cuerpo denso: movimientos, objetos, habilidades */
+  --texto-base: 15px; /* line-height 22px: nombres de Pokémon en listas, porcentajes de uso, campos */
+  --texto-lg: 18px;   /* line-height 24px: títulos de sección y cabeceras de navegación */
+  --texto-xl: 22px;   /* line-height 28px: nombre del Pokémon en su ficha y total de estadísticas */
+}
+
+/* Radios, bordes, espaciados y medidas */
+:root {
+  --radio-xs: 4px;  /* insignias de tipo y barras de estadística (grosor 6 px) */
+  --radio-sm: 6px;  /* botones pequeños, selector de formato */
+  --radio-md: 8px;  /* botones estándar, buscador, casillas de equipo */
+  --radio-lg: 10px; /* tarjetas y bloques de estadísticas */
+
+  --borde-fino: 1px solid var(--borde);
+  --borde-foco: 1.5px solid var(--acento);
+  --icono-trazo: 1.5px; /* iconos de línea de 20 × 20 px */
+
+  --espacio-1: 4px;
+  --espacio-2: 8px;
+  --espacio-3: 12px;
+  --espacio-4: 16px; /* margen lateral de pantalla */
+  --espacio-6: 24px; /* separación entre bloques principales */
+  --espacio-8: 32px;
+
+  --ancho-app: 390px;
+  --alto-tactil-min: 44px;
+  --alto-fila-lista: 52px; /* fila de Pokémon con sprite de 32 × 32, tipos y % de uso */
+  --alto-cabecera: 56px;
+  --alto-barra-inferior: 60px;
+
+
+  /* Movimiento: solo transform, opacity y colores, de 150 a 300 ms. Con «reducir movimiento», nada (última sección) */
+  --transicion: 150ms ease-out;
+  --transicion-media: 220ms ease-out;
+  --pulsado: scale(0.97); /* respuesta al tocar un botón, un chip o una tarjeta */
+}
+
+/* ------------------------------------------------------------------------
+   Base del documento
+   ------------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--fondo);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente-sans);
+  font-size: var(--texto-base);
+  font-weight: var(--peso-normal);
+  line-height: 22px;
+  font-variant-numeric: var(--numeros-tabulares);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: var(--peso-semibold);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Iconos de línea. Los <svg> sin clase de las pantallas antiguas se ven igual que los nuevos */
+svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Foco visible: solo con teclado */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--borde-foco);
+  outline-offset: 2px;
+}
+
+/* Solo para lectores de pantalla */
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------------------
+   Columna de la app: 390 px centrada, 16 px de margen lateral
+   ------------------------------------------------------------------------ */
+
+.app {
+  max-width: var(--ancho-app);
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  overflow-x: clip;
+}
+
+.app > main {
+  padding:
+    env(safe-area-inset-top)
+    calc(var(--espacio-4) + env(safe-area-inset-right))
+    calc(var(--alto-barra-inferior) + var(--espacio-6) + env(safe-area-inset-bottom))
+    calc(var(--espacio-4) + env(safe-area-inset-left));
+}
+
+/* Separación entre los bloques principales de una pantalla */
+.seccion {
+  margin-top: var(--espacio-6);
+}
+
+/* ------------------------------------------------------------------------
+   Cabecera de pantalla (56 px)
+   ------------------------------------------------------------------------ */
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-height: var(--alto-cabecera);
+  margin-bottom: var(--espacio-4);
+  border-bottom: var(--borde-fino);
+}
+
+/* La flecha de volver se pega al margen: el icono queda alineado con el contenido */
+.cabecera > .boton-icono:first-child {
+  margin-left: calc(-1 * var(--espacio-3));
+}
+
+.cabecera-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.cabecera-titulo {
+  overflow: hidden;
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+  line-height: 24px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cabecera-sub {
+  overflow: hidden;
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Pantallas principales (Inicio, Equipos, Dex, Matches, Perfil): título grande, sin flecha */
+.cabecera.grande .cabecera-titulo {
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-negrita);
+  line-height: 28px;
+}
+
+.cabecera-acciones {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-right: calc(-1 * var(--espacio-3));
+}
+
+/* ------------------------------------------------------------------------
+   Títulos de sección
+   ------------------------------------------------------------------------ */
+
+.seccion-cabecera {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  margin-bottom: var(--espacio-2);
+}
+
+.seccion-titulo {
+  min-width: 0;
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+  line-height: 24px;
+}
+
+/* Lo de la derecha (un enlace «Ver todo», un número…) no empuja el título fuera */
+.seccion-cabecera > :not(.seccion-titulo) {
+  flex: none;
+}
+
+/* ------------------------------------------------------------------------
+   Tarjeta y lista con separadores
+   ------------------------------------------------------------------------ */
+
+.tarjeta {
+  padding: var(--espacio-4);
+  border: var(--borde-fino);
+  border-radius: var(--radio-lg);
+  background: var(--superficie);
+}
+
+/* Tarjeta que contiene una lista: las filas llevan su propio relleno */
+.tarjeta.sin-relleno {
+  padding: 0;
+  overflow: hidden;
+}
+
+.lista {
+  list-style: none;
+}
+
+.lista > li + li {
+  border-top: var(--borde-fino);
+}
+
+/* Fila genérica de una lista: texto a la izquierda, dato o flecha a la derecha */
+.fila {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  min-height: var(--alto-tactil-min);
+  padding: var(--espacio-2) var(--espacio-4);
+  transition: background-color var(--transicion);
+}
+
+a.fila:active,
+button.fila:active {
+  background: var(--superficie-alt);
+}
+
+button.fila {
+  width: 100%;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.fila-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.fila-titulo {
+  overflow-wrap: anywhere;
+  font-size: var(--texto-base);
+  font-weight: var(--peso-medio);
+}
+
+.fila-sub {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  line-height: 16px;
+  overflow-wrap: anywhere;
+}
+
+.fila-valor {
+  flex: none;
+  color: var(--texto);
+  font-size: var(--texto-base);
+  font-variant-numeric: var(--numeros-tabulares);
+  text-align: right;
+}
+
+.fila > .icono:last-child {
+  color: var(--texto-tenue);
+}
+
+/* ------------------------------------------------------------------------
+   Fila de Pokémon (52 px): sprite de 32, nombre, tipos y % de uso
+   ------------------------------------------------------------------------ */
+
+.fila-pokemon {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  min-height: var(--alto-fila-lista);
+  padding: var(--espacio-1) var(--espacio-4);
+  transition: background-color var(--transicion);
+}
+
+a.fila-pokemon:active {
+  background: var(--superficie-alt);
+}
+
+.fila-pokemon-texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fila-pokemon-nombre {
+  overflow: hidden;
+  font-size: var(--texto-base);
+  font-weight: var(--peso-medio);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fila-pokemon-dato {
+  flex: none;
+  font-size: var(--texto-base);
+  font-variant-numeric: var(--numeros-tabulares);
+  text-align: right;
+}
+
+/* ------------------------------------------------------------------------
+   Sprites: 32 px (normal), 40 (mediano), 56 (grande), 96 (enorme)
+   La imagen de la PokeAPI trae mucho margen transparente: se dibuja más grande que su caja
+   ------------------------------------------------------------------------ */
+
+.sprite {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  vertical-align: middle;
+}
+
+.sprite img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 125%;
+  height: 125%;
+  max-width: none;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+}
+
+.sprite.mediano {
+  width: 40px;
+  height: 40px;
+}
+
+.sprite.grande {
+  width: 56px;
+  height: 56px;
+}
+
+.sprite.enorme {
+  width: 96px;
+  height: 96px;
+}
+
+/* Al ampliar un sprite de píxeles, que no se emborrone */
+.sprite.enorme img {
+  image-rendering: pixelated;
+}
+
+/* Recuadro detrás del sprite (Último consultado, fichas) */
+.sprite.con-fondo {
+  overflow: hidden;
+  border-radius: var(--radio-md);
+  background: var(--superficie-alt);
+}
+
+.sprite.con-fondo img {
+  width: 120%;
+  height: 120%;
+}
+
+/* Sin imagen: sus iniciales */
+.sprite.sin {
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radio-md);
+  background: var(--superficie-alt);
+}
+
+.sprite.sin::after {
+  content: attr(data-iniciales);
+  color: var(--texto-suave);
+  font-size: var(--texto-2xs);
+  font-weight: var(--peso-semibold);
+}
+
+/* ------------------------------------------------------------------------
+   Insignias de tipo e insignias genéricas
+   ------------------------------------------------------------------------ */
+
+.tipos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+}
+
+.tipo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  padding: 0 6px;
+  border-radius: var(--radio-xs);
+  background: var(--color-tipo, var(--texto-suave));
+  color: var(--texto-sobre-color); /* los colores de tipo están calibrados para el blanco */
+  font-size: var(--texto-2xs);
+  font-weight: var(--peso-medio);
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.tipo small {
+  font-size: var(--texto-2xs);
+  font-weight: var(--peso-semibold);
+}
+
+/* Debilidad doble e inmunidad: un contorno que se distinga del resto */
+.tipo.x4 {
+  outline: 1.5px solid var(--error);
+  outline-offset: 1px;
+}
+
+.tipo.x0 {
+  outline: 1.5px solid var(--exito);
+  outline-offset: 1px;
+}
+
+/* Etiqueta pequeña: grupo de uso (S, A…), formato de un equipo, «Simulado»… */
+.insignia {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: var(--radio-xs);
+  background: var(--superficie-alt);
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-semibold);
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.insignia.acento {
+  background: var(--acento-suave);
+  color: var(--acento);
+}
+
+.insignia.exito {
+  background: var(--exito-suave);
+  color: var(--exito);
+}
+
+.insignia.error {
+  background: var(--error-suave);
+  color: var(--error);
+}
+
+/* «Ninguno» y otros textos de relleno */
+.nada {
+  color: var(--texto-tenue);
+  font-size: var(--texto-sm);
+}
+
+/* Texto secundario pequeño: notas, fuentes, explicaciones */
+.nota {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  line-height: 16px;
+}
+
+/* Ficha pequeña con borde: búsquedas recientes, Pokémon de un rival */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-height: var(--alto-tactil-min);
+  padding: 0 var(--espacio-3) 0 var(--espacio-2);
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  background: var(--superficie);
+  font-size: var(--texto-sm);
+  transition: background-color var(--transicion), transform var(--transicion);
+}
+
+a.chip:active,
+button.chip:active {
+  background: var(--superficie-alt);
+  transform: var(--pulsado);
+}
+
+/* ------------------------------------------------------------------------
+   Botones
+   ------------------------------------------------------------------------ */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-2);
+  min-height: var(--alto-tactil-min);
+  padding: 0 var(--espacio-4);
+  border: 1px solid var(--acento);
+  border-radius: var(--radio-md);
+  background: var(--acento-relleno);
+  color: var(--texto-sobre-color);
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  line-height: 20px;
+  text-align: center;
+  transition: background-color var(--transicion), opacity var(--transicion), transform var(--transicion);
+}
+
+.boton:active {
+  opacity: 0.85;
+  transform: var(--pulsado);
+}
+
+.boton.secundario {
+  border-color: var(--borde-fuerte);
+  background: var(--superficie);
+  color: var(--texto);
+}
+
+.boton.secundario:active {
+  background: var(--superficie-alt);
+  opacity: 1;
+}
+
+/* De texto: sin fondo ni borde, en --acento («Ver la clasificación completa») */
+.boton.texto {
+  min-height: var(--alto-tactil-min);
+  padding: 0 var(--espacio-1);
+  border-color: transparent;
+  background: none;
+  color: var(--acento);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+}
+
+/* Acciones que borran: secundario con el texto en --error */
+.boton.peligro {
+  border-color: var(--borde-fuerte);
+  background: var(--superficie);
+  color: var(--error);
+}
+
+.boton.peligro:active {
+  background: var(--error-suave);
+  opacity: 1;
+}
+
+.boton.bloque {
+  width: 100%;
+}
+
+/* Más compacto de letra y de ancho, para una tarjeta; la zona táctil sigue siendo de 44 px */
+.boton.pequeno {
+  min-height: var(--alto-tactil-min);
+  padding: 0 var(--espacio-3);
+  border-radius: var(--radio-sm);
+  font-size: var(--texto-sm);
+}
+
+.boton:disabled,
+.boton[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.5;
+}
+
+/* Botón de solo icono, 44 × 44 (volver, buscar, compartir, borrar…). Necesita aria-label */
+.boton-icono {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: var(--alto-tactil-min);
+  height: var(--alto-tactil-min);
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radio-md);
+  background: none;
+  color: var(--texto);
+  transition: background-color var(--transicion), color var(--transicion), transform var(--transicion);
+}
+
+.boton-icono:active {
+  background: var(--superficie-alt);
+  transform: scale(0.92);
+}
+
+/* Con borde, como un botón secundario (el dado de la Dex) */
+.boton-icono.borde {
+  border-color: var(--borde-fuerte);
+  background: var(--superficie);
+}
+
+.boton-icono.activo,
+.boton-icono[aria-pressed="true"] {
+  color: var(--acento);
+}
+
+.boton-icono.peligro {
+  color: var(--error);
+}
+
+.boton-icono:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+/* Fila de botones que se reparten el ancho */
+.botones-fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+}
+
+.botones-fila > .boton {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ------------------------------------------------------------------------
+   Campos de texto, buscador y formularios. A 16 px: con menos, el iPhone hace zoom
+   ------------------------------------------------------------------------ */
+
+input:not([type="checkbox"], [type="radio"], [type="file"], [type="range"]),
+select,
+textarea {
+  width: 100%;
+  min-height: var(--alto-tactil-min);
+  padding: 0 var(--espacio-3);
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  background: var(--superficie);
+  color: var(--texto);
+  font-size: 16px;
+  line-height: 22px;
+  transition: border-color var(--transicion);
+}
+
+textarea {
+  min-height: 120px;
+  padding: 10px var(--espacio-3);
+  resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--texto-tenue);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  border-color: var(--acento);
+  outline: var(--borde-foco);
+  outline-offset: -1px;
+}
+
+/* Campo con su etiqueta encima */
+.campo {
+  display: grid;
+  gap: 6px;
+}
+
+.campo-etiqueta {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  line-height: 16px;
+}
+
+.formulario {
+  display: grid;
+  gap: var(--espacio-4);
+}
+
+/* Buscador: lupa a la izquierda dentro del campo */
+.buscador {
+  position: relative;
+  display: block;
+  flex: 1;
+  min-width: 0;
+}
+
+.buscador > .icono {
+  position: absolute;
+  top: 50%;
+  left: var(--espacio-3);
+  color: var(--texto-tenue);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.buscador input {
+  padding-left: 40px;
+}
+
+/* Sin la «x» ni la lupa que añade el navegador a type="search" */
+.buscador input::-webkit-search-decoration,
+.buscador input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ------------------------------------------------------------------------
+   Selector segmentado (formato, x1/x2/x4…): botones con aria-pressed
+   ------------------------------------------------------------------------ */
+
+.segmentado {
+  display: flex;
+  gap: 2px;
+  max-width: 100%;
+  padding: 2px;
+  overflow-x: auto;
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  background: var(--superficie-alt);
+  scrollbar-width: none;
+}
+
+.segmentado::-webkit-scrollbar {
+  display: none;
+}
+
+.segmento {
+  flex: 1 0 auto;
+  min-width: var(--alto-tactil-min);
+  min-height: var(--alto-tactil-min);
+  padding: 0 var(--espacio-3);
+  border: 0;
+  border-radius: var(--radio-sm);
+  background: none;
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  white-space: nowrap;
+  transition: background-color var(--transicion), color var(--transicion), transform var(--transicion);
+}
+
+.segmento:active {
+  transform: var(--pulsado);
+}
+
+.segmento[aria-pressed="true"] {
+  background: var(--acento-relleno);
+  color: var(--texto-sobre-color);
+}
+
+.segmento:focus-visible {
+  outline-offset: -2px;
+}
+
+/* Selector de formato: un botón con el formato elegido que abre la hoja con todos (selectorDeFormatos en ui.js) */
+.selector-formato-boton {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  width: 100%;
+  min-height: var(--alto-tactil-min);
+  padding: var(--espacio-1) var(--espacio-3);
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  background: var(--superficie);
+  color: var(--texto);
+  text-align: left;
+  transition: background-color var(--transicion), transform var(--transicion);
+}
+
+.selector-formato-boton:active {
+  background: var(--superficie-alt);
+  transform: var(--pulsado);
+}
+
+.selector-formato-boton > .icono {
+  flex: none;
+  color: var(--texto-suave);
+}
+
+.selector-formato-texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.selector-formato-etiqueta {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  line-height: 16px;
+}
+
+.selector-formato-nombre {
+  overflow: hidden;
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Hoja de formatos: grupos con sus listas */
+.hoja-formatos .formatos-grupo + .formatos-grupo {
+  margin-top: var(--espacio-6);
+}
+
+.formatos-grupo-titulo {
+  margin-bottom: var(--espacio-1);
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+}
+
+.formatos-subtitulo {
+  margin: var(--espacio-3) 0 var(--espacio-1);
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.formato-opcion .fila-texto {
+  display: flex;
+  flex-direction: column;
+}
+
+.formato-opcion[aria-pressed="true"] .fila-titulo {
+  color: var(--acento);
+}
+
+.formato-marca {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  color: var(--acento);
+}
+
+/* Selector de periodo (mes de Smogon / últimos 7 días): dos mitades iguales; el texto pasa a dos líneas si no cabe */
+.segmentado.periodos {
+  margin-top: var(--espacio-3);
+}
+
+.segmentado.periodos .segmento {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--espacio-2);
+  font-size: var(--texto-xs);
+  line-height: 1.25;
+  white-space: normal;
+}
+
+/* ------------------------------------------------------------------------
+   Interruptor (casilla con role="switch")
+   ------------------------------------------------------------------------ */
+
+.interruptor {
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 26px;
+  margin: 0;
+  border: var(--borde-fino);
+  border-radius: 13px;
+  background: var(--borde-fuerte);
+  cursor: pointer;
+  transition: background-color var(--transicion);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.interruptor::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--texto-sobre-color);
+  transition: transform var(--transicion);
+}
+
+.interruptor:checked {
+  background: var(--acento-relleno);
+}
+
+/* 18 px: 42 de ancho útil, menos 20 de la bolita y 2 de margen a cada lado */
+.interruptor:checked::after {
+  transform: translateX(18px);
+}
+
+/* Fila con texto a la izquierda e interruptor a la derecha; toda la fila es la zona táctil */
+.fila-interruptor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  min-height: var(--alto-tactil-min);
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------------
+   Plegable: <details class="plegable"> con la flecha a la derecha
+   ------------------------------------------------------------------------ */
+
+.plegable {
+  border-bottom: var(--borde-fino);
+}
+
+.plegable > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  min-height: 48px;
+  cursor: pointer;
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+  line-height: 24px;
+  list-style: none;
+}
+
+.plegable > summary::-webkit-details-marker {
+  display: none;
+}
+
+.plegable > summary::marker {
+  content: "";
+}
+
+.plegable > summary > .icono:last-child {
+  color: var(--texto-suave);
+}
+
+.plegable > summary > .icono:last-child {
+  transition: transform var(--transicion);
+}
+
+.plegable[open] > summary > .icono:last-child {
+  transform: rotate(90deg);
+}
+
+.plegable-contenido {
+  padding-bottom: var(--espacio-4);
+}
+
+/* ------------------------------------------------------------------------
+   Barra de estadística: 6 px, en --acento
+   ------------------------------------------------------------------------ */
+
+.barra {
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--radio-xs);
+  background: var(--superficie-alt);
+}
+
+.barra-relleno {
+  display: block;
+  height: 100%;
+  border-radius: var(--radio-xs);
+  background: var(--acento);
+  transform: scaleX(var(--llenado, 1));
+  transform-origin: 0 50%;
+}
+
+/* ------------------------------------------------------------------------
+   Avisos, «cargando» y «no hay nada»
+   ------------------------------------------------------------------------ */
+
+.aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border: 1px solid var(--error-suave);
+  border-radius: var(--radio-lg);
+  background: var(--error-suave);
+  color: var(--texto);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+
+.aviso > .icono {
+  margin-top: 0;
+  color: var(--error);
+}
+
+.aviso-texto {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.aviso-titulo {
+  font-weight: var(--peso-medio);
+}
+
+.aviso-detalle {
+  margin-top: 2px;
+  color: var(--texto-suave);
+}
+
+/* Aviso informativo (no es un error) */
+.aviso.info {
+  border-color: var(--acento-suave);
+  background: var(--acento-suave);
+}
+
+.aviso.info > .icono {
+  color: var(--acento);
+}
+
+.cargando {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-3);
+  min-height: 88px;
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.cargando-giro {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--borde);
+  border-top-color: var(--acento);
+  border-radius: 50%;
+  animation: girar 800ms linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.vacio {
+  display: grid;
+  justify-items: center;
+  gap: var(--espacio-2);
+  padding: var(--espacio-6) var(--espacio-4);
+  border: var(--borde-fino);
+  border-radius: var(--radio-lg);
+  background: var(--superficie);
+  text-align: center;
+}
+
+.vacio-titulo {
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+}
+
+.vacio-texto {
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+}
+
+.vacio-accion {
+  margin-top: var(--espacio-2);
+}
+
+/* ------------------------------------------------------------------------
+   Hoja inferior: <dialog class="hoja">, abierta con showModal()
+   ------------------------------------------------------------------------ */
+
+.hoja {
+  position: fixed;
+  inset: auto 0 0;
+  width: 100%;
+  max-width: var(--ancho-app);
+  max-height: 85vh;
+  max-height: 85dvh;
+  margin: 0 auto;
+  padding: var(--espacio-2) var(--espacio-4) calc(var(--espacio-6) + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  border: var(--borde-fino);
+  border-bottom: 0;
+  border-radius: var(--radio-lg) var(--radio-lg) 0 0;
+  background: var(--superficie);
+  color: var(--texto);
+  transform: none;
+  transition:
+    transform 250ms ease-out,
+    overlay 250ms allow-discrete,
+    display 250ms allow-discrete;
+}
+
+.hoja::backdrop {
+  background: rgb(0 0 0 / 0.4);
+  opacity: 1;
+  transition:
+    opacity 250ms ease-out,
+    overlay 250ms allow-discrete,
+    display 250ms allow-discrete;
+}
+
+/* La hoja sube desde abajo al abrirse y baja al cerrarse; si el navegador no sabe, aparece y desaparece sin más */
+.hoja:not([open]) {
+  transform: translateY(100%);
+}
+
+.hoja:not([open])::backdrop {
+  opacity: 0;
+}
+
+@starting-style {
+  .hoja[open] {
+    transform: translateY(100%);
+  }
+
+  .hoja[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+.hoja-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-2);
+  min-height: var(--alto-tactil-min);
+  margin-bottom: var(--espacio-2);
+}
+
+.hoja-titulo {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+}
+
+/* ------------------------------------------------------------------------
+   Barra inferior (60 px): indicador de 2 px arriba y la pestaña activa en --acento
+   ------------------------------------------------------------------------ */
+
+.barra-inferior {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  max-width: var(--ancho-app);
+  margin: 0 auto;
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: var(--borde-fino);
+  background: var(--superficie);
+}
+
+.barra-inferior a {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: var(--alto-barra-inferior);
+  color: var(--texto-suave);
+  font-size: var(--texto-2xs);
+  font-weight: var(--peso-medio);
+  line-height: 14px;
+  transition: color var(--transicion);
+}
+
+.barra-inferior a:active svg {
+  transform: scale(0.88);
+}
+
+.barra-inferior a svg {
+  transition: transform var(--transicion);
+}
+
+.barra-inferior a[aria-current="page"] {
+  color: var(--acento);
+}
+
+.barra-inferior a[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: var(--espacio-2);
+  left: var(--espacio-2);
+  height: 2px;
+  background: var(--acento);
+  animation: marcar-pestana var(--transicion-media);
+}
+
+@keyframes marcar-pestana {
+  from {
+    opacity: 0;
+    transform: scaleX(0.3);
+  }
+}
+
+.barra-inferior a:focus-visible {
+  outline-offset: -3px;
+}
+
+/* ------------------------------------------------------------------------
+   Notificación breve (avisar) y aviso de versión nueva
+   ------------------------------------------------------------------------ */
+
+.aviso-flotante {
+  position: fixed;
+  right: var(--espacio-4);
+  bottom: calc(var(--alto-barra-inferior) + var(--espacio-3) + env(safe-area-inset-bottom));
+  left: var(--espacio-4);
+  z-index: 25;
+  width: fit-content;
+  max-width: calc(var(--ancho-app) - 2 * var(--espacio-4));
+  margin: 0 auto;
+  padding: 10px var(--espacio-4);
+  border-radius: var(--radio-md);
+  background: var(--texto);
+  color: var(--fondo);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  line-height: 20px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity var(--transicion-media), transform var(--transicion-media);
+}
+
+.aviso-flotante.visible {
+  opacity: 1;
+  transform: none;
+}
+
+.actualizacion {
+  position: fixed;
+  top: calc(var(--espacio-2) + env(safe-area-inset-top));
+  right: var(--espacio-4);
+  left: var(--espacio-4);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  max-width: calc(var(--ancho-app) - 2 * var(--espacio-4));
+  margin: 0 auto;
+  padding: var(--espacio-2) var(--espacio-2) var(--espacio-2) var(--espacio-4);
+  border: var(--borde-fino);
+  border-radius: var(--radio-lg);
+  background: var(--superficie);
+  font-size: var(--texto-sm);
+}
+
+.actualizacion p {
+  flex: 1;
+}
+
+.actualizacion[hidden] {
+  display: none;
+}
+
+.actualizacion:not([hidden]) {
+  animation: bajar var(--transicion-media);
+}
+
+@keyframes bajar {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* ------------------------------------------------------------------------
+   Cambio de tema: movimiento.js pone «cambia-tema» en <html> unos 300 ms al cambiar data-theme
+   ------------------------------------------------------------------------ */
+
+.cambia-tema,
+.cambia-tema *,
+.cambia-tema *::before,
+.cambia-tema *::after {
+  transition:
+    background-color 200ms ease-out,
+    color 200ms ease-out,
+    border-color 200ms ease-out,
+    fill 200ms ease-out,
+    stroke 200ms ease-out !important;
+}
+
+/* ------------------------------------------------------------------------
+   Movimiento: con «reducir movimiento», nada. Todo se ve desde el principio y en su sitio
+   (movimiento.js tampoco lanza ninguna animación)
+   ------------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Pantalla de «el formato elegido no carga»: el aviso y sus botones, uno bajo otro */
+.formato-sin-datos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-3, 12px);
+  padding: var(--espacio-4, 16px);
+}

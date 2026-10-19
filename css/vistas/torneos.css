@@ -1,0 +1,261 @@
+/* Torneos: lista de torneos y top 8 de uno. Solo coloca las piezas comunes (ver COMPONENTES.md) */
+
+.v-torneos > .selector-formato,
+.v-torneos > .boton.bloque {
+  margin-top: var(--espacio-3);
+}
+
+.v-torneos > .nota {
+  margin-top: var(--espacio-2);
+}
+
+.v-torneos .torneos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+/* Tarjeta de un torneo: nombre y datos, campeón y los 6 sprites de su equipo */
+.v-torneos .torneo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+  transition: transform var(--transicion);
+}
+
+.v-torneos .torneo:active {
+  transform: var(--pulsado);
+}
+
+.v-torneos .torneo-cab {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+}
+
+.v-torneos .torneo-cab > .icono {
+  flex: none;
+  margin-top: 2px;
+  color: var(--texto-tenue);
+}
+
+.v-torneos .torneo-titulo {
+  min-width: 0;
+}
+
+.v-torneos .torneo-nombre {
+  overflow-wrap: anywhere;
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  line-height: 22px;
+}
+
+.v-torneos .torneo-campeon {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-width: 0;
+}
+
+.v-torneos .torneo-jugador {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v-torneos .torneo-sprites {
+  display: flex;
+  justify-content: space-between;
+  max-width: 100%;
+}
+
+/* Un puesto del top 8 */
+.v-torneos .torneo-puesto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+.v-torneos .torneo-puesto + .torneo-puesto {
+  margin-top: var(--espacio-2);
+}
+
+.v-torneos .torneo-puesto-cab {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.v-torneos .torneo-puesto-cab .torneo-jugador {
+  flex: 1;
+  font-size: var(--texto-base);
+}
+
+.v-torneos .torneo-record {
+  flex: none;
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.v-torneos .plegable {
+  border-bottom: 0;
+}
+
+.v-torneos .plegable > summary {
+  min-height: var(--alto-tactil-min);
+  font-size: var(--texto-sm);
+}
+
+.v-torneos .plegable-contenido {
+  padding-bottom: 0;
+}
+
+.v-torneos .torneo-set {
+  padding: var(--espacio-2) 0;
+}
+
+.v-torneos .torneo-set-cab {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-height: var(--alto-tactil-min);
+}
+
+.v-torneos .torneo-set-cab .fila-pokemon-nombre {
+  flex: 1;
+  min-width: 0;
+}
+
+.v-torneos .torneo-set-linea {
+  font-size: var(--texto-sm);
+}
+
+.v-torneos .torneo-set .nota {
+  margin-top: 2px;
+}
+
+/* El enlace a Limitless del pie: zona táctil de 44 px aunque vaya dentro de una frase */
+.v-torneos .pie a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alto-tactil-min);
+  color: var(--acento);
+}
+
+.v-torneos .torneos-intro {
+  margin-top: var(--espacio-2);
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+}
+
+.v-torneos .torneo-cifras {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--espacio-2);
+  margin-top: var(--espacio-3);
+  padding: var(--espacio-3);
+}
+
+.v-torneos .torneo-cifras dt {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+}
+
+.v-torneos .torneo-cifras dd {
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+}
+
+.v-torneos .torneo-equipos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+.v-torneos .torneo-equipos > .torneo-puesto + .torneo-puesto {
+  margin-top: 0;
+}
+
+.v-torneos .torneo-acciones {
+  gap: var(--espacio-2);
+}
+
+.v-torneos .torneo-acciones .boton {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0 var(--espacio-2);
+  font-size: var(--texto-xs);
+}
+
+.v-torneos .torneo-arquetipos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+}
+
+.v-torneos .torneo-sets[hidden] {
+  display: none;
+}
+
+.v-torneos .uso-barra {
+  flex: none;
+  width: 56px;
+}
+
+.v-torneos .puesto {
+  flex: none;
+  width: 20px;
+  color: var(--texto-tenue);
+  font-size: var(--texto-xs);
+  text-align: right;
+}
+
+.v-torneos .torneos-filtro,
+.v-torneos .torneos-chips,
+.v-torneos .torneos-arquetipos,
+.v-torneos .torneos-filtros {
+  margin-top: var(--espacio-3);
+}
+
+.v-torneos .torneos-chips:empty {
+  display: none;
+}
+
+.v-torneos .torneos-chips .chip {
+  min-height: var(--alto-tactil-min);
+}
+
+.v-torneos .torneos-filtros {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-3);
+}
+
+.v-torneos .grupo-equipo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+.v-torneos .grupo-datos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--espacio-2);
+}
+
+.v-torneos .grupo-tasa {
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-negrita);
+  line-height: 28px;
+}
+
+.v-torneos .grupo-etiqueta {
+  flex: 1;
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+}

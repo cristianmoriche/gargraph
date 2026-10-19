@@ -1,0 +1,143 @@
+/* Gargraph · Matches (#/matches), diseño simple.
+   Todos los selectores empiezan por .v-matches. Colores, tamaños y radios: las variables de css/estilos.css. */
+
+.v-matches .exito { color: var(--exito); }
+.v-matches .error { color: var(--error); }
+
+/* Resumen */
+.v-matches .resumen { display: grid; gap: var(--espacio-3); }
+.v-matches .resumen-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-2) var(--espacio-3);
+}
+.v-matches .resumen-cifras {
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-negrita);
+  line-height: 28px;
+}
+.v-matches .separador { color: var(--texto-tenue); }
+.v-matches .resumen-racha { font-size: var(--texto-base); }
+.v-matches .resumen-racha b { font-weight: var(--peso-negrita); }
+.v-matches .puntos { display: flex; gap: 6px; }
+.v-matches .punto { width: 12px; height: 12px; border-radius: 50%; background: var(--texto-tenue); }
+.v-matches .punto.victoria { background: var(--exito); }
+.v-matches .punto.derrota { background: var(--error); }
+.v-matches .resumen-sim { padding-top: var(--espacio-3); border-top: var(--borde-fino); }
+
+/* Rivales más vistos */
+.v-matches .rivales { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--espacio-2); }
+.v-matches .rival {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--espacio-2) var(--espacio-1);
+  text-align: center;
+  transition: background-color var(--transicion), transform var(--transicion);
+}
+.v-matches .rival:active { background: var(--superficie-alt); transform: var(--pulsado); }
+.v-matches .rival-nombre {
+  max-width: 100%;
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  line-height: 16px;
+  overflow-wrap: anywhere;
+}
+
+/* Importar */
+.v-matches .en-linea { display: flex; align-items: flex-end; gap: var(--espacio-2); }
+.v-matches .en-linea .crece { flex: 1; min-width: 0; }
+.v-matches .en-linea input { flex: 1; min-width: 0; }
+.v-matches .en-linea .boton { flex: none; }
+.v-matches .previa { display: grid; gap: var(--espacio-3); margin-top: var(--espacio-3); }
+.v-matches .previa .boton { margin-top: var(--espacio-1); }
+.v-matches .previa .nota { margin-bottom: calc(-1 * var(--espacio-2)); }
+.v-matches .sprites { display: flex; flex-wrap: wrap; gap: var(--espacio-1); }
+.v-matches .repeticiones-bloque { margin-top: var(--espacio-6); }
+.v-matches .repeticiones-bloque > .lista .fila { min-height: 52px; }
+
+/* Opciones de radio (resultado, quién eras tú) */
+.v-matches .opciones { display: flex; flex-wrap: wrap; gap: 0 var(--espacio-4); margin: 0; padding: 0; border: 0; }
+.v-matches .opciones legend { width: 100%; padding: 0; }
+.v-matches .opciones label { display: flex; align-items: center; min-height: var(--alto-tactil-min); font-size: var(--texto-base); }
+/* El botón de opción ocupa 44 px para el dedo; lo que se ve es el círculo de 20 px dibujado en su centro */
+.v-matches .opciones input {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--alto-tactil-min);
+  height: var(--alto-tactil-min);
+  margin: 0 0 0 calc(-1 * var(--espacio-3));
+  background: none;
+  border: 0;
+}
+.v-matches .opciones input::before {
+  content: "";
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--texto-tenue);
+  border-radius: 50%;
+}
+.v-matches .opciones input:checked::before {
+  border: 6px solid var(--acento);
+  background: var(--superficie);
+}
+
+/* Registrar a mano */
+.v-matches .dos-columnas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--espacio-2); }
+.v-matches .dos-columnas .campo { min-width: 0; }
+.v-matches .chips-rival { display: flex; flex-wrap: wrap; gap: var(--espacio-2); }
+.v-matches .chips-rival .chip { min-width: 0; }
+.v-matches .quitar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--alto-tactil-min);
+  height: var(--alto-tactil-min);
+  margin: 0 calc(-1 * var(--espacio-3)) 0 calc(-1 * var(--espacio-2));
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--texto-suave);
+}
+
+/* Historial */
+.v-matches .combate { display: flex; align-items: center; }
+.v-matches .combate .fila { flex: 1; min-width: 0; min-height: var(--alto-fila-lista); }
+.v-matches .combate .fila-texto { display: block; }
+.v-matches .linea-titulo { display: flex; align-items: center; gap: var(--espacio-2); }
+.v-matches .rival-texto { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.v-matches .linea { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.v-matches .borrar { margin-right: var(--espacio-1); color: var(--texto-tenue); }
+.v-matches .borrar:active { background: var(--error-suave); color: var(--error); }
+
+/* Marca del resultado: V, D o E */
+.v-matches .res {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radio-sm);
+  background: var(--superficie-alt);
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-negrita);
+}
+.v-matches .res.v { background: var(--exito-suave); color: var(--exito); }
+.v-matches .res.d { background: var(--error-suave); color: var(--error); }
+
+/* Hoja del combate */
+.v-matches .hoja-resultado { display: flex; align-items: center; gap: var(--espacio-3); margin-bottom: var(--espacio-4); }
+.v-matches .hoja-resultado .res { width: 40px; height: 40px; font-size: var(--texto-base); }
+.v-matches .hoja .campo-etiqueta { margin-top: var(--espacio-3); margin-bottom: 6px; }
+.v-matches .equipo { display: flex; flex-wrap: wrap; gap: var(--espacio-2); }
+.v-matches .equipo .chip { min-width: 0; }
+.v-matches .hoja-notas { font-size: var(--texto-sm); line-height: 20px; overflow-wrap: anywhere; }
+.v-matches .hoja-acciones { display: grid; gap: var(--espacio-2); margin-top: var(--espacio-6); }

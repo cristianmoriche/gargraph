@@ -1,0 +1,163 @@
+/* Quiz: selector, pregunta, cartas de velocidad, opciones de tipos y marcador */
+.v-quiz .modo {
+  margin-top: var(--espacio-3);
+}
+
+.v-quiz .pregunta {
+  margin: var(--espacio-6) 0 var(--espacio-1);
+  font-size: var(--texto-xl);
+  line-height: 28px;
+  font-weight: var(--peso-negrita);
+}
+
+.v-quiz .pregunta .tipo {
+  vertical-align: middle;
+}
+
+/* Velocidad: dos cartas del mismo ancho */
+.v-quiz .cartas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-4);
+}
+
+.v-quiz .carta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-width: 0;
+  padding: var(--espacio-4) var(--espacio-2) var(--espacio-3);
+  overflow: hidden;
+  border: var(--borde-fino);
+  border-radius: var(--radio-lg);
+  background: var(--superficie);
+  color: var(--texto);
+  font: inherit;
+  text-align: center;
+  transition: border-color var(--transicion), transform var(--transicion);
+}
+
+.v-quiz .carta:not(:disabled):active {
+  transform: var(--pulsado);
+}
+
+.v-quiz .carta:disabled {
+  opacity: 1;
+}
+
+.v-quiz .carta-nombre {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v-quiz .carta-dato {
+  font-size: var(--texto-xs);
+  line-height: 16px;
+  color: var(--texto-suave);
+}
+
+.v-quiz .carta-veredicto {
+  align-self: stretch;
+  margin: 0 calc(-1 * var(--espacio-2)) calc(-1 * var(--espacio-3));
+  padding: var(--espacio-2);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+}
+
+.v-quiz .carta [hidden] {
+  display: none;
+}
+
+.v-quiz .carta.correcta {
+  border: 1.5px solid var(--exito);
+}
+
+.v-quiz .carta.correcta .carta-veredicto {
+  background: var(--exito-suave);
+  color: var(--exito);
+}
+
+.v-quiz .carta.incorrecta {
+  border: 1.5px solid var(--error);
+}
+
+.v-quiz .carta.incorrecta .carta-veredicto {
+  background: var(--error-suave);
+  color: var(--error);
+}
+
+/* Tipos: el Pokémon atacado y seis opciones */
+.v-quiz .objetivo {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  margin-top: var(--espacio-4);
+}
+
+.v-quiz .objetivo-texto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  min-width: 0;
+  font-size: var(--texto-lg);
+}
+
+.v-quiz .opciones {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--espacio-2);
+  margin-top: var(--espacio-4);
+}
+
+.v-quiz .opcion {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-negrita);
+}
+
+.v-quiz .opcion:disabled {
+  opacity: 1;
+}
+
+.v-quiz .opcion.correcta {
+  border-color: var(--exito);
+  background: var(--exito-suave);
+  color: var(--exito);
+}
+
+.v-quiz .opcion.incorrecta {
+  border-color: var(--error);
+  background: var(--error-suave);
+  color: var(--error);
+}
+
+.v-quiz .veredicto {
+  margin-top: var(--espacio-3);
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+}
+
+.v-quiz .veredicto[hidden] {
+  display: none;
+}
+
+/* Racha y mejor racha */
+.v-quiz .marcador {
+  display: flex;
+  justify-content: space-between;
+  margin: var(--espacio-4) 0;
+  font-size: var(--texto-lg);
+}
+
+.v-quiz .marcador strong {
+  font-weight: var(--peso-negrita);
+}
+
+.v-quiz #quiz-siguiente[hidden] {
+  display: none;
+}

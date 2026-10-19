@@ -1,0 +1,70 @@
+# Actualiza los datos de Gargraph cada día y los publica.
+# Qué hace: ejecuta herramientas/generar-datos.mjs (mes nuevo de Smogon si lo hay + torneos de VGC de Limitless + últimos 7 días de
+# repeticiones de Showdown);
+# si datos/ ha cambiado, sube VERSION en sw.js, hace commit y push. Cómo lanzarla a mano: DESPLIEGUE.md.
+name: Update data
+
+on:
+  schedule:
+    - cron: "17 5 * * *"   # todos los días a las 05:17 UTC (hora libre de picos de GitHub)
+  workflow_dispatch:        # botón «Run workflow» en la pestaña Actions
+
+permissions:
+  contents: write           # para hacer push de los datos nuevos
+  pages: write              # para pedir la republicación de GitHub Pages (ver el último paso)
+
+# Dos ejecuciones a la vez se pisarían al hacer push
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Limitless: los torneos ya terminados se guardan en una caché para no volver a pedirlos (su API admite 50 peticiones cada 5 minutos).
+      # Cada ejecución baja como mucho LIMITLESS_MAXIMO torneos nuevos; si la caché se pierde, se rehace en unos días.
+      - name: Restore Limitless cache
+        uses: actions/cache@v4
+        with:
+          path: .cache-limitless
+          key: limitless-${{ github.run_id }}
+          restore-keys: limitless-
+
+      - name: Generate data
+        env:
+          LIMITLESS_CACHE: ${{ github.workspace }}/.cache-limitless
+          LIMITLESS_MAXIMO: "200"
+        run: node herramientas/generar-datos.mjs
+
+      - name: Commit and push if data changed
+        id: publicar
+        run: |
+          if [ -z "$(git status --porcelain -- datos)" ]; then
+            echo "No data changes."
+            echo "cambios=no" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          node herramientas/subir-version.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add datos sw.js
+          git commit -m "Update data $(date -u +%Y-%m-%d)"
+          git push
+          echo "cambios=si" >> "$GITHUB_OUTPUT"
+
+      # Un push hecho con el token de Actions no siempre lanza la publicación de Pages: se pide a mano.
+      # Si Pages está configurado con «GitHub Actions» como origen, esta llamada falla y no pasa nada.
+      - name: Ask GitHub Pages to rebuild
+        if: steps.publicar.outputs.cambios == 'si'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/${{ github.repository }}/pages/builds"

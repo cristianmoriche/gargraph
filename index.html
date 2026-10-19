@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Competitive Pokédex: stats, tier list, synergies, teams, and battles with data from Smogon, PokeAPI, and Pokémon Showdown.">
+  <!-- Color de la barra del navegador: el --fondo de cada tema (js/ui.js aplicarTema lo cambia si se elige uno en Perfil) -->
+  <meta name="theme-color" content="#F8F7F4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111215" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <title>Gargraph</title>
+
+  <!-- Para instalarla como app (PWA): manifiesto, iconos y aspecto en el iPhone -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="img/icono-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Gargraph">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <!-- API web: Google Fonts, para la tipografía Inter (la misma dirección que en sw.js) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" crossorigin="anonymous" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/estilos.css">
+  <!-- Los estilos de cada pantalla, después de los comunes -->
+  <link rel="stylesheet" href="css/vistas/inicio.css">
+  <link rel="stylesheet" href="css/vistas/tierlist.css">
+  <link rel="stylesheet" href="css/vistas/dex.css">
+  <link rel="stylesheet" href="css/vistas/velocidades.css">
+  <link rel="stylesheet" href="css/vistas/calc.css">
+  <link rel="stylesheet" href="css/vistas/quiz.css">
+  <link rel="stylesheet" href="css/vistas/equipos.css">
+  <link rel="stylesheet" href="css/vistas/matches.css">
+  <link rel="stylesheet" href="css/vistas/torneos.css">
+  <link rel="stylesheet" href="css/vistas/perfil.css">
+  <link rel="stylesheet" href="css/vistas/sim-entrada.css">
+  <link rel="stylesheet" href="css/vistas/sim-combate.css">
+  <link rel="stylesheet" href="css/vistas/sim-analisis.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <div class="app">
+    <main id="vista" aria-live="polite">
+      <div class="cargando" role="status"><span class="cargando-giro" aria-hidden="true"></span><p>Opening Gargraph…</p></div>
+    </main>
+    <noscript><p class="aviso">Gargraph requires JavaScript to work.</p></noscript>
+  </div>
+
+  <!-- Iconos: los mismos trazos que icono() de js/ui.js -->
+  <nav class="barra-inferior" aria-label="Sections">
+    <a href="#/inicio" data-seccion="inicio">
+      <svg class="icono" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v10.5a1 1 0 0 0 1 1H10v-6h4v6h3.5a1 1 0 0 0 1-1V9"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="#/equipos" data-seccion="equipos">
+      <svg class="icono" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M15.5 4.7a3.5 3.5 0 0 1 0 6.6"/><path d="M18 14.3a6.5 6.5 0 0 1 3.5 5.7"/></svg>
+      <span>Teams</span>
+    </a>
+    <a href="#/dex" data-seccion="dex">
+      <svg class="icono" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 6.5C10.3 5 7.8 4.2 3.5 4.2v13.6c4.3 0 6.8.8 8.5 2.3 1.7-1.5 4.2-2.3 8.5-2.3V4.2c-4.3 0-6.8.8-8.5 2.3z"/><path d="M12 6.5v13.6"/></svg>
+      <span>Dex</span>
+    </a>
+    <a href="#/matches" data-seccion="matches">
+      <svg class="icono" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 17.5 3.5 6.5v-3h3l11 11"/><path d="m13 19 6-6"/><path d="m16 16 4 4"/><path d="M9.5 6.5 6.5 3.5"/><path d="M14.5 6.5l3-3h3v3l-3 3"/><path d="m11 13-5 5"/><path d="m5 14 4 4"/><path d="m3.5 19.5 2 2"/></svg>
+      <span>Matches</span>
+    </a>
+    <a href="#/perfil" data-seccion="perfil">
+      <svg class="icono" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.4 18.3a6.5 6.5 0 0 1 11.2 0"/></svg>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <div id="actualizacion" class="actualizacion" role="status" hidden>
+    <p>A new version of Gargraph is available</p>
+    <button type="button" class="boton pequeno">Update</button>
+  </div>
+  <p id="aviso-flotante" class="aviso-flotante" role="status"></p>
+
+  <!-- Sugerencias para los campos de texto (se rellenan desde JavaScript la primera vez que hacen falta) -->
+  <datalist id="lista-pokemon"></datalist>
+  <datalist id="lista-movimientos"></datalist>
+  <datalist id="lista-objetos"></datalist>
+</body>
+</html>

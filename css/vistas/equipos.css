@@ -1,0 +1,372 @@
+/* Gargraph · equipos (#/equipos y #/equipos/<id>).
+   Todos los selectores empiezan por .v-equipos. Las piezas comunes (botones, tarjetas, hojas, insignias) están en css/estilos.css;
+   aquí solo se colocan. Colores, tamaños de letra, radios y espacios: las variables de ESTILO.md. */
+
+.v-equipos h1,
+.v-equipos h2,
+.v-equipos h3,
+.v-equipos p,
+.v-equipos dl,
+.v-equipos dd,
+.v-equipos ul,
+.v-equipos ol { margin: 0; }
+
+/* ------------------------------------------------------------------------
+   Lista de equipos
+   ------------------------------------------------------------------------ */
+
+.v-equipos .eq-acciones-lista > :first-child { flex: none; }
+.v-equipos .eq-acciones-lista > :last-child { flex: 1 1 auto; }
+
+.v-equipos .eq-equipos {
+  display: grid;
+  gap: var(--espacio-3);
+}
+
+.v-equipos .eq-tarjeta {
+  display: grid;
+  gap: var(--espacio-3);
+  transition: background-color var(--transicion), transform var(--transicion);
+}
+
+.v-equipos .eq-tarjeta:active { background: var(--superficie-alt); transform: scale(0.985); }
+.v-equipos .eq-tarjeta.activa { border-color: var(--acento); }
+
+.v-equipos .eq-tarjeta-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.v-equipos .eq-tarjeta-nombre {
+  min-width: 0;
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-negrita);
+  line-height: 24px;
+  overflow-wrap: anywhere;
+}
+
+.v-equipos .eq-activo-marca { margin-left: auto; }
+
+.v-equipos .eq-casillas {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--espacio-2);
+}
+
+.v-equipos .eq-casilla {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  background: var(--fondo);
+}
+
+.v-equipos .eq-casilla.vacia {
+  border-style: dashed;
+  background: none;
+}
+
+.v-equipos .eq-nota { margin-top: var(--espacio-4); }
+
+/* ------------------------------------------------------------------------
+   Editor: cabecera, formato y botones del equipo
+   ------------------------------------------------------------------------ */
+
+/* El nombre es un campo, pero se ve como un título hasta que se toca; el lápiz avisa de que se puede editar */
+.v-equipos .eq-nombre-caja {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  color: var(--texto-tenue);
+}
+
+.v-equipos .eq-nombre-caja .icono { flex: none; pointer-events: none; }
+
+.v-equipos .eq-nombre {
+  flex: 1;
+  min-width: 0;
+  color: var(--texto);
+  padding: 0 var(--espacio-2);
+  border-color: transparent;
+  background: none;
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+  text-overflow: ellipsis;
+}
+
+.v-equipos .eq-nombre:hover { border-color: var(--borde); }
+.v-equipos .eq-nombre:focus-visible { background: var(--superficie); }
+
+.v-equipos .eq-avisos {
+  display: grid;
+  gap: var(--espacio-2);
+  margin-bottom: var(--espacio-4);
+}
+
+.v-equipos .selector-formato {
+  margin-bottom: var(--espacio-3);
+}
+
+.v-equipos .eq-botones-equipo {
+  display: grid;
+  gap: var(--espacio-2);
+}
+
+.v-equipos .eq-botones-equipo .nota {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.v-equipos .eq-vacio { margin-top: var(--espacio-6); }
+
+/* ------------------------------------------------------------------------
+   Rejilla de miembros, 3 × 2
+   ------------------------------------------------------------------------ */
+
+.v-equipos .eq-miembros {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--espacio-2);
+}
+
+.v-equipos .eq-miembro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-1);
+  min-width: 0;
+  min-height: 96px;
+  padding: var(--espacio-2) var(--espacio-1);
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  background: var(--superficie);
+  font-size: var(--texto-sm);
+  line-height: 18px;
+  text-align: center;
+  transition: background-color var(--transicion), border-color var(--transicion), transform var(--transicion);
+}
+
+.v-equipos .eq-miembro:active { transform: var(--pulsado); }
+
+.v-equipos .eq-miembro-nombre { max-width: 100%; overflow-wrap: anywhere; }
+
+.v-equipos .eq-miembro[aria-pressed="true"] {
+  border-color: var(--acento);
+  outline: 1px solid var(--acento);
+  outline-offset: -2px;
+  background: var(--acento-suave);
+}
+
+.v-equipos .eq-miembro.libre {
+  border-style: dashed;
+  border-color: var(--borde-fuerte);
+  background: none;
+  color: var(--texto-suave);
+}
+
+/* ------------------------------------------------------------------------
+   Editar a <Pokémon>
+   ------------------------------------------------------------------------ */
+
+.v-equipos .eq-ficha { display: grid; gap: var(--espacio-4); }
+
+.v-equipos .eq-ficha-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-2);
+}
+
+.v-equipos .eq-datos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espacio-3) var(--espacio-4);
+}
+
+.v-equipos .eq-datos > div { min-width: 0; }
+.v-equipos .eq-datos .completo { grid-column: 1 / -1; }
+
+.v-equipos .eq-datos dt {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+  line-height: 16px;
+}
+
+.v-equipos .eq-datos dd {
+  margin-top: 2px;
+  font-size: var(--texto-base);
+  font-weight: var(--peso-medio);
+  line-height: 22px;
+  overflow-wrap: anywhere;
+}
+
+.v-equipos .eq-movs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espacio-2);
+  padding: 0;
+  list-style: none;
+}
+
+.v-equipos .eq-movs li {
+  display: grid;
+  place-items: center;
+  min-height: var(--alto-tactil-min);
+  padding: var(--espacio-1) var(--espacio-2);
+  border: var(--borde-fino);
+  border-radius: var(--radio-md);
+  font-size: var(--texto-sm);
+  line-height: 20px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.v-equipos .eq-plegables > .plegable:first-child { border-top: var(--borde-fino); }
+
+.v-equipos .eq-plegables > .plegable > summary {
+  min-height: var(--alto-tactil-min);
+  font-size: var(--texto-base);
+}
+
+.v-equipos .eq-plegables > .plegable > .plegable-contenido { padding-top: var(--espacio-1); }
+
+.v-equipos .eq-stats {
+  display: grid;
+  gap: var(--espacio-2);
+}
+
+.v-equipos .eq-stat {
+  display: grid;
+  grid-template-columns: 48px 1fr 40px;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+.v-equipos .eq-stat-nombre {
+  color: var(--texto-suave);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medio);
+}
+
+.v-equipos .eq-stat-valor {
+  font-size: var(--texto-base);
+  font-weight: var(--peso-medio);
+  text-align: right;
+}
+
+/* Editor de set completo */
+.v-equipos .eq-set { gap: var(--espacio-3); }
+
+.v-equipos .eq-grupo {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.v-equipos .eq-grupo legend {
+  margin-bottom: 6px;
+  padding: 0;
+}
+
+.v-equipos .eq-valores {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--espacio-2);
+}
+
+.v-equipos .eq-valores input {
+  padding: 0 var(--espacio-1);
+  text-align: center;
+}
+
+.v-equipos .eq-movimientos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espacio-2);
+}
+
+.v-equipos .eq-set input,
+.v-equipos .eq-set select { min-width: 0; }
+
+/* ------------------------------------------------------------------------
+   Resumen del equipo
+   ------------------------------------------------------------------------ */
+
+.v-equipos .eq-resumen { display: grid; gap: var(--espacio-4); }
+
+.v-equipos .eq-bloque {
+  display: grid;
+  gap: var(--espacio-2);
+}
+
+.v-equipos .eq-bloque + .eq-bloque {
+  padding-top: var(--espacio-4);
+  border-top: var(--borde-fino);
+}
+
+.v-equipos .eq-bloque-titulo {
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  line-height: 22px;
+}
+
+.v-equipos .eq-debilidades {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--espacio-3) var(--espacio-2);
+  padding: 0;
+  list-style: none;
+}
+
+.v-equipos .eq-debilidades li {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.v-equipos .eq-debilidades .punto .nota {
+  color: var(--error);
+  font-weight: var(--peso-semibold);
+}
+
+.v-equipos .eq-velocidad {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--espacio-1);
+  padding: 0;
+  list-style: none;
+}
+
+.v-equipos .eq-velocidad li {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-width: 0;
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medio);
+  line-height: 20px;
+}
+
+/* ------------------------------------------------------------------------
+   Hojas: importar, exportar y buscador del alta
+   ------------------------------------------------------------------------ */
+
+.v-equipos .hoja textarea { display: block; }
+
+.v-equipos .eq-resultado {
+  width: 100%;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.v-equipos .eq-resultado:active { background: var(--superficie-alt); }
+.v-equipos .eq-resultado:disabled { cursor: default; opacity: 0.5; }
