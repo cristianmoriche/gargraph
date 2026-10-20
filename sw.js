@@ -9,7 +9,7 @@
 // y se piden primero a Internet (ver redPrimero), para no avisar a diario.
 // Los ficheros de cada formato (datos/formatos/ y datos/historico/) son muchos y no se guardan todos al instalar: solo los del formato por
 // defecto (Champions VGC M-C), para que la app abra sin conexión la primera vez; los demás se guardan la primera vez que se abren (ver guardarAlAbrir).
-const VERSION = "3.4.1";
+const VERSION = "3.4.2";
 const DATOS = "2026-09·2026-10-19";
 
 const CACHE_APP = `apex-dex-app-${VERSION}-${DATOS}`;
